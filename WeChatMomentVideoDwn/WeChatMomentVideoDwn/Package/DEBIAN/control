@@ -1,6 +1,6 @@
 Package: com.kinkenyuen.WeChatMomentVideoDwn
 Name: WeChatMomentVideoDwn
-Version: 1.0
+Version: 1.0.1
 Description: 微信时刻视频下载，无配置界面，安装生效
                 视频界面内长按弹出下载按钮        
 Section: System

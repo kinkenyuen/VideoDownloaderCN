@@ -7,13 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C70CA39921E5B6E700DFDC05 /* ViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C70CA39721E5B6E700DFDC05 /* ViewController.h */; };
+		C70CA39A21E5B6E700DFDC05 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C70CA39821E5B6E700DFDC05 /* ViewController.m */; };
 		C765ABED21DFBEA300FAFF4A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABEC21DFBEA300FAFF4A /* UIKit.framework */; };
 		C765ABEF21DFBEA300FAFF4A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABEE21DFBEA300FAFF4A /* Foundation.framework */; };
 		C765ABF121DFBEA300FAFF4A /* CydiaSubstrate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABF021DFBEA300FAFF4A /* CydiaSubstrate.framework */; };
 		C765ABFA21DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm in Sources */ = {isa = PBXBuildFile; fileRef = C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C7FE4F0F21E5C57900B26452 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		C70CA39721E5B6E700DFDC05 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		C70CA39821E5B6E700DFDC05 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		C70CA39B21E5C21B00DFDC05 /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
 		C765ABE921DFBEA300FAFF4A /* WeChatMomentVideoDwn.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = WeChatMomentVideoDwn.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		C765ABEC21DFBEA300FAFF4A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C765ABEE21DFBEA300FAFF4A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -39,6 +56,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C70CA39521E5B6C100DFDC05 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				C70CA39B21E5C21B00DFDC05 /* Resources.bundle */,
+			);
+			name = icons;
+			sourceTree = "<group>";
+		};
 		C765ABDE21DFBEA300FAFF4A = {
 			isa = PBXGroup;
 			children = (
@@ -69,8 +94,11 @@
 		C765ABF221DFBEA300FAFF4A /* WeChatMomentVideoDwn */ = {
 			isa = PBXGroup;
 			children = (
+				C70CA39521E5B6C100DFDC05 /* icons */,
 				C765ABF821DFBEA300FAFF4A /* WeChatMomentVideoDwn.xm */,
 				C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */,
+				C70CA39721E5B6E700DFDC05 /* ViewController.h */,
+				C70CA39821E5B6E700DFDC05 /* ViewController.m */,
 				C765ABF321DFBEA300FAFF4A /* Package */,
 				C765ABF621DFBEA300FAFF4A /* Supporting Files */,
 			);
@@ -133,6 +161,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C70CA39921E5B6E700DFDC05 /* ViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,6 +173,7 @@
 			buildConfigurationList = C765AC0121DFBEA300FAFF4A /* Build configuration list for PBXNativeTarget "WeChatMomentVideoDwn" */;
 			buildPhases = (
 				C765ABE321DFBEA300FAFF4A /* ShellScript */,
+				C7FE4F0F21E5C57900B26452 /* CopyFiles */,
 				C765ABE421DFBEA300FAFF4A /* Sources */,
 				C765ABE521DFBEA300FAFF4A /* Frameworks */,
 				C765ABE621DFBEA300FAFF4A /* Headers */,
@@ -204,7 +234,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/opt/MonkeyDev/bin/md --xcbp-logos";
+			shellScript = "/opt/MonkeyDev/bin/md --xcbp-logos\n";
 		};
 		C765ABE721DFBEA300FAFF4A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -221,7 +251,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/opt/MonkeyDev/bin/md --xcbp";
+			shellScript = "/opt/MonkeyDev/bin/md --xcbp\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -230,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C70CA39A21E5B6E700DFDC05 /* ViewController.m in Sources */,
 				C765ABFA21DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
