@@ -1,0 +1,376 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C765ABED21DFBEA300FAFF4A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABEC21DFBEA300FAFF4A /* UIKit.framework */; };
+		C765ABEF21DFBEA300FAFF4A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABEE21DFBEA300FAFF4A /* Foundation.framework */; };
+		C765ABF121DFBEA300FAFF4A /* CydiaSubstrate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABF021DFBEA300FAFF4A /* CydiaSubstrate.framework */; };
+		C765ABFA21DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm in Sources */ = {isa = PBXBuildFile; fileRef = C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C765ABE921DFBEA300FAFF4A /* WeChatMomentVideoDwn.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = WeChatMomentVideoDwn.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		C765ABEC21DFBEA300FAFF4A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C765ABEE21DFBEA300FAFF4A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C765ABF021DFBEA300FAFF4A /* CydiaSubstrate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CydiaSubstrate.framework; path = Library/Frameworks/CydiaSubstrate.framework; sourceTree = DEVELOPER_DIR; };
+		C765ABF521DFBEA300FAFF4A /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = Package/DEBIAN/control; sourceTree = "<group>"; };
+		C765ABF721DFBEA300FAFF4A /* WeChatMomentVideoDwn-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WeChatMomentVideoDwn-Prefix.pch"; sourceTree = "<group>"; };
+		C765ABF821DFBEA300FAFF4A /* WeChatMomentVideoDwn.xm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = WeChatMomentVideoDwn.xm; sourceTree = "<group>"; };
+		C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeChatMomentVideoDwn.mm; sourceTree = "<group>"; };
+		C765ABFE21DFBEA300FAFF4A /* WeChatMomentVideoDwn.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = WeChatMomentVideoDwn.plist; path = Package/Library/MobileSubstrate/DynamicLibraries/WeChatMomentVideoDwn.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C765ABE521DFBEA300FAFF4A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C765ABED21DFBEA300FAFF4A /* UIKit.framework in Frameworks */,
+				C765ABEF21DFBEA300FAFF4A /* Foundation.framework in Frameworks */,
+				C765ABF121DFBEA300FAFF4A /* CydiaSubstrate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C765ABDE21DFBEA300FAFF4A = {
+			isa = PBXGroup;
+			children = (
+				C765ABF221DFBEA300FAFF4A /* WeChatMomentVideoDwn */,
+				C765ABEB21DFBEA300FAFF4A /* Frameworks */,
+				C765ABEA21DFBEA300FAFF4A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C765ABEA21DFBEA300FAFF4A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABE921DFBEA300FAFF4A /* WeChatMomentVideoDwn.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C765ABEB21DFBEA300FAFF4A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABEC21DFBEA300FAFF4A /* UIKit.framework */,
+				C765ABEE21DFBEA300FAFF4A /* Foundation.framework */,
+				C765ABF021DFBEA300FAFF4A /* CydiaSubstrate.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C765ABF221DFBEA300FAFF4A /* WeChatMomentVideoDwn */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABF821DFBEA300FAFF4A /* WeChatMomentVideoDwn.xm */,
+				C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */,
+				C765ABF321DFBEA300FAFF4A /* Package */,
+				C765ABF621DFBEA300FAFF4A /* Supporting Files */,
+			);
+			path = WeChatMomentVideoDwn;
+			sourceTree = "<group>";
+		};
+		C765ABF321DFBEA300FAFF4A /* Package */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABF421DFBEA300FAFF4A /* DEBIAN */,
+				C765ABFB21DFBEA300FAFF4A /* Library */,
+			);
+			name = Package;
+			sourceTree = "<group>";
+		};
+		C765ABF421DFBEA300FAFF4A /* DEBIAN */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABF521DFBEA300FAFF4A /* control */,
+			);
+			name = DEBIAN;
+			sourceTree = "<group>";
+		};
+		C765ABF621DFBEA300FAFF4A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABF721DFBEA300FAFF4A /* WeChatMomentVideoDwn-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C765ABFB21DFBEA300FAFF4A /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABFC21DFBEA300FAFF4A /* MobileSubstrate */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
+		C765ABFC21DFBEA300FAFF4A /* MobileSubstrate */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABFD21DFBEA300FAFF4A /* DynamicLibraries */,
+			);
+			name = MobileSubstrate;
+			sourceTree = "<group>";
+		};
+		C765ABFD21DFBEA300FAFF4A /* DynamicLibraries */ = {
+			isa = PBXGroup;
+			children = (
+				C765ABFE21DFBEA300FAFF4A /* WeChatMomentVideoDwn.plist */,
+			);
+			name = DynamicLibraries;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		C765ABE621DFBEA300FAFF4A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		C765ABE821DFBEA300FAFF4A /* WeChatMomentVideoDwn */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C765AC0121DFBEA300FAFF4A /* Build configuration list for PBXNativeTarget "WeChatMomentVideoDwn" */;
+			buildPhases = (
+				C765ABE321DFBEA300FAFF4A /* ShellScript */,
+				C765ABE421DFBEA300FAFF4A /* Sources */,
+				C765ABE521DFBEA300FAFF4A /* Frameworks */,
+				C765ABE621DFBEA300FAFF4A /* Headers */,
+				C765ABE721DFBEA300FAFF4A /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WeChatMomentVideoDwn;
+			productName = WeChatMomentVideoDwn;
+			productReference = C765ABE921DFBEA300FAFF4A /* WeChatMomentVideoDwn.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C765ABDF21DFBEA300FAFF4A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				TargetAttributes = {
+					C765ABE821DFBEA300FAFF4A = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = C765ABE221DFBEA300FAFF4A /* Build configuration list for PBXProject "WeChatMomentVideoDwn" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C765ABDE21DFBEA300FAFF4A;
+			productRefGroup = C765ABEA21DFBEA300FAFF4A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C765ABE821DFBEA300FAFF4A /* WeChatMomentVideoDwn */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C765ABE321DFBEA300FAFF4A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/opt/MonkeyDev/bin/md --xcbp-logos";
+		};
+		C765ABE721DFBEA300FAFF4A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/opt/MonkeyDev/bin/md --xcbp";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C765ABE421DFBEA300FAFF4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C765ABFA21DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C765ABFF21DFBEA300FAFF4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(MonkeyDevPath)/frameworks/**",
+					"$(MonkeyDevTheosPath)/vendor/lib",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(MonkeyDevTheosPath)/vendor/include/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = "$(MonkeyDevTheosPath)/vendor/lib/**";
+				MonkeyDevPath = /opt/MonkeyDev;
+				MonkeyDevTheosPath = /opt/theos;
+				OTHER_CFLAGS = "-DTHEOS_INSTANCE_NAME=\"\\\"WeChatMomentVideoDwn\\\"\"";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C765AC0021DFBEA300FAFF4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(MonkeyDevPath)/frameworks/**",
+					"$(MonkeyDevTheosPath)/vendor/lib",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(MonkeyDevTheosPath)/vendor/include/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LIBRARY_SEARCH_PATHS = "$(MonkeyDevTheosPath)/vendor/lib/**";
+				MonkeyDevPath = /opt/MonkeyDev;
+				MonkeyDevTheosPath = /opt/theos;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DTHEOS_INSTANCE_NAME=\"\\\"WeChatMomentVideoDwn\\\"\"";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
+			};
+			name = Debug;
+		};
+		C765AC0221DFBEA300FAFF4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 73CD6LSN38;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WeChatMomentVideoDwn/WeChatMomentVideoDwn-Prefix.pch";
+				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
+				MonkeyDevBuildPackageOnAnyBuild = NO;
+				MonkeyDevClearUiCacheOnInstall = NO;
+				MonkeyDevCopyOnBuild = NO;
+				MonkeyDevDeviceIP = "";
+				MonkeyDevDevicePassword = "";
+				MonkeyDevDevicePort = "";
+				MonkeyDevInstallOnAnyBuild = YES;
+				MonkeyDevInstallOnProfiling = YES;
+				MonkeyDevkillProcessOnInstall = SpringBoard;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C765AC0321DFBEA300FAFF4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 73CD6LSN38;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WeChatMomentVideoDwn/WeChatMomentVideoDwn-Prefix.pch";
+				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
+				MonkeyDevBuildPackageOnAnyBuild = NO;
+				MonkeyDevClearUiCacheOnInstall = NO;
+				MonkeyDevCopyOnBuild = NO;
+				MonkeyDevDeviceIP = "";
+				MonkeyDevDevicePassword = "";
+				MonkeyDevDevicePort = "";
+				MonkeyDevInstallOnAnyBuild = YES;
+				MonkeyDevInstallOnProfiling = YES;
+				MonkeyDevkillProcessOnInstall = SpringBoard;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C765ABE221DFBEA300FAFF4A /* Build configuration list for PBXProject "WeChatMomentVideoDwn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C765ABFF21DFBEA300FAFF4A /* Release */,
+				C765AC0021DFBEA300FAFF4A /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C765AC0121DFBEA300FAFF4A /* Build configuration list for PBXNativeTarget "WeChatMomentVideoDwn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C765AC0221DFBEA300FAFF4A /* Release */,
+				C765AC0321DFBEA300FAFF4A /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C765ABDF21DFBEA300FAFF4A /* Project object */;
+}
