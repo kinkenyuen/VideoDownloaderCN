@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C70CA39921E5B6E700DFDC05 /* ViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C70CA39721E5B6E700DFDC05 /* ViewController.h */; };
-		C70CA39A21E5B6E700DFDC05 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C70CA39821E5B6E700DFDC05 /* ViewController.m */; };
 		C765ABED21DFBEA300FAFF4A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABEC21DFBEA300FAFF4A /* UIKit.framework */; };
 		C765ABEF21DFBEA300FAFF4A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABEE21DFBEA300FAFF4A /* Foundation.framework */; };
 		C765ABF121DFBEA300FAFF4A /* CydiaSubstrate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765ABF021DFBEA300FAFF4A /* CydiaSubstrate.framework */; };
@@ -28,8 +26,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C70CA39721E5B6E700DFDC05 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		C70CA39821E5B6E700DFDC05 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C70CA39B21E5C21B00DFDC05 /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
 		C765ABE921DFBEA300FAFF4A /* WeChatMomentVideoDwn.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = WeChatMomentVideoDwn.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		C765ABEC21DFBEA300FAFF4A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -97,8 +93,6 @@
 				C70CA39521E5B6C100DFDC05 /* icons */,
 				C765ABF821DFBEA300FAFF4A /* WeChatMomentVideoDwn.xm */,
 				C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */,
-				C70CA39721E5B6E700DFDC05 /* ViewController.h */,
-				C70CA39821E5B6E700DFDC05 /* ViewController.m */,
 				C765ABF321DFBEA300FAFF4A /* Package */,
 				C765ABF621DFBEA300FAFF4A /* Supporting Files */,
 			);
@@ -161,7 +155,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C70CA39921E5B6E700DFDC05 /* ViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +253,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C70CA39A21E5B6E700DFDC05 /* ViewController.m in Sources */,
 				C765ABFA21DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
