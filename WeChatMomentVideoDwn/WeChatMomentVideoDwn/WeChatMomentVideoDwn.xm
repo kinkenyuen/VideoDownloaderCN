@@ -161,16 +161,15 @@
 
 %end
 
-
 %hook UIButton
 /**
  下载按钮图标
  */
 - (void)setImage:(UIImage *)image forState:(UIControlState)state {
     if ([[[self titleLabel] text] isEqualToString:@"下载视频"]) {
-        NSString *strRecBundle = [[NSBundle mainBundle] pathForResource:@"Resources" ofType:@"bundle"];
-        NSString *strC = [[NSBundle bundleWithPath:strRecBundle] pathForResource:@"dwn" ofType:@"png" inDirectory:@"image"];
-        UIImage *icon = [UIImage imageWithContentsOfFile:strC];
+        NSString *recPath = @"/Library/Application Support/WeChatMomentVideoDwn/";
+        NSString *imagePath = [recPath stringByAppendingPathComponent:@"dwn.png"];
+        UIImage *icon = [UIImage imageWithContentsOfFile:imagePath];
         %orig((icon ? : image),state);
     }else {
         %orig;

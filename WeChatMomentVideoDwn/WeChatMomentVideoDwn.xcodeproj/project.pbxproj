@@ -26,7 +26,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C70CA39B21E5C21B00DFDC05 /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
 		C765ABE921DFBEA300FAFF4A /* WeChatMomentVideoDwn.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = WeChatMomentVideoDwn.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		C765ABEC21DFBEA300FAFF4A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C765ABEE21DFBEA300FAFF4A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -36,6 +35,7 @@
 		C765ABF821DFBEA300FAFF4A /* WeChatMomentVideoDwn.xm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = WeChatMomentVideoDwn.xm; sourceTree = "<group>"; };
 		C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeChatMomentVideoDwn.mm; sourceTree = "<group>"; };
 		C765ABFE21DFBEA300FAFF4A /* WeChatMomentVideoDwn.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = WeChatMomentVideoDwn.plist; path = Package/Library/MobileSubstrate/DynamicLibraries/WeChatMomentVideoDwn.plist; sourceTree = "<group>"; };
+		C7DC727521E7675B00C2BE60 /* dwn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dwn.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,14 +52,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C70CA39521E5B6C100DFDC05 /* icons */ = {
-			isa = PBXGroup;
-			children = (
-				C70CA39B21E5C21B00DFDC05 /* Resources.bundle */,
-			);
-			name = icons;
-			sourceTree = "<group>";
-		};
 		C765ABDE21DFBEA300FAFF4A = {
 			isa = PBXGroup;
 			children = (
@@ -90,7 +82,6 @@
 		C765ABF221DFBEA300FAFF4A /* WeChatMomentVideoDwn */ = {
 			isa = PBXGroup;
 			children = (
-				C70CA39521E5B6C100DFDC05 /* icons */,
 				C765ABF821DFBEA300FAFF4A /* WeChatMomentVideoDwn.xm */,
 				C765ABF921DFBEA300FAFF4A /* WeChatMomentVideoDwn.mm */,
 				C765ABF321DFBEA300FAFF4A /* Package */,
@@ -127,6 +118,7 @@
 		C765ABFB21DFBEA300FAFF4A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				C7DC727321E7675B00C2BE60 /* Application Support */,
 				C765ABFC21DFBEA300FAFF4A /* MobileSubstrate */,
 			);
 			name = Library;
@@ -146,6 +138,23 @@
 				C765ABFE21DFBEA300FAFF4A /* WeChatMomentVideoDwn.plist */,
 			);
 			name = DynamicLibraries;
+			sourceTree = "<group>";
+		};
+		C7DC727321E7675B00C2BE60 /* Application Support */ = {
+			isa = PBXGroup;
+			children = (
+				C7DC727421E7675B00C2BE60 /* WeChatMomentVideoDwn */,
+			);
+			name = "Application Support";
+			path = "Package/Library/Application Support";
+			sourceTree = "<group>";
+		};
+		C7DC727421E7675B00C2BE60 /* WeChatMomentVideoDwn */ = {
+			isa = PBXGroup;
+			children = (
+				C7DC727521E7675B00C2BE60 /* dwn.png */,
+			);
+			path = WeChatMomentVideoDwn;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
