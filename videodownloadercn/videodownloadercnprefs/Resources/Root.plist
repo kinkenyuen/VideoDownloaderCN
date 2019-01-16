@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>开关</string>
+			<key>footerText</key>
+			<string>Tips:开关切换请重开App</string>
+		</dict>
+		<dict>   <!-- 这些Cell在设置中改变值后，会在/var/mobile/Library/Preferences/com.kinkenyuen.videodownloadercnprefs.plist文件生成对应的key与value -->
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key><!--所有cell的defaults应该写成同一的值，可以是preference bundle的包名 -->
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key><!-- cell对应的key，主要用来控制插件开关，在/var/mobile/Library/Preferences/com.kinkenyuen.videodownloadercnprefs.plist文件 -->
+			<string>wechatEnable</string>
+			<key>label</key>
+			<string>微信时刻视频</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>WeChatIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>weiboEnable</string>
+			<key>label</key>
+			<string>微博视频</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>Weibo.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>neteasemusicEnable</string>
+			<key>label</key>
+			<string>网易云音乐视频</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>NeteaseMusic.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>功能</string>
+			<key>footerText</key>
+			<string>允许App内短视频下载保存到本地
+
+1.微信时刻视频下载，视频播放界面长按呼出，基于微信7.0.2
+
+2.微博视频下载，视频预览与播放界面长按呼出，基于微博9.0.0
+
+3.网易云音乐视频下载,视频预览与播放界面长按呼出，基于网易云音乐5.8.1
+			</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>描述</string>
+			<key>footerText</key>
+			<string>Copyright (c) 2019 Ken. All rights reserved.
+
+仅用于技术研究~</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Created by</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Ken</string>
+			<key>action</key><!-- ButtonCell 触发后的action 要在XXXRootListController中实现 -->
+			<string>gotoMyPage</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>Ken.png</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>VideoDownloaderCN</string>
+</dict>
+</plist>

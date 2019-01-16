@@ -1,0 +1,9 @@
+{
+	Filter = {
+		Bundles = (
+			"com.tencent.xin",
+			"com.sina.weibo",
+			"com.netease.cloudmusic",
+		);
+	};
+}

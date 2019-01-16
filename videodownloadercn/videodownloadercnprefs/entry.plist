@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!-- 设置应用中的入口图标、文字等 -->
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>bundle</key>
+		<string>videodownloadercnprefs</string>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>detail</key>
+		<string>KenRootListController</string>
+		<key>icon</key>                            <!-- 对应插件设置入口图片 -->
+		<string>VideoDownloaderIcon.png</string>
+		<key>isController</key>
+		<true/>
+		<key>label</key>                           <!-- 对应插件设置入口标题 -->
+		<string>VideoDownloaderCN</string>  
+	</dict>
+</dict>
+</plist>
+
+
+
+
+
