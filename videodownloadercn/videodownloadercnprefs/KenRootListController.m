@@ -17,4 +17,8 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.jianshu.com/u/4fcc843d9f5d/"]];
 }
 
+-(void)killSpringBoard {
+	system("killall SpringBoard");
+}
+
 @end
