@@ -1,6 +1,6 @@
 # VideoDownloaderCN  
 
-deb在realease,自取食用.
+个人cydia源:kkyuen.github.io/repo
 
 # 功能
 下载App内短视频，保存到系统相册.
