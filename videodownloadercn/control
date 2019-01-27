@@ -1,7 +1,7 @@
 Package: com.kinkenyuen.videodownloadercn
 Name: VideoDownloaderCN
 Depends: mobilesubstrate
-Version: 1.0.3
+Version: 1.0.4
 Architecture: iphoneos-arm
 Description:允许App内短视频下载保存到本地
             1.微信时刻视频下载，视频播放界面点按或长按呼出，基于微信7.0.2

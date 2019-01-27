@@ -4,6 +4,8 @@
 			"com.tencent.xin",
 			"com.sina.weibo",
 			"com.netease.cloudmusic",
+			"com.atebits.Tweetie2",
+			"com.baidu.tieba"
 		);
 	};
 }

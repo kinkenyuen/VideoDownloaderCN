@@ -14,7 +14,7 @@
  插件设置中点击ButtoonCell触发的方法
  */
 - (void)gotoMyPage {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.jianshu.com/u/4fcc843d9f5d/"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://kinkenyuen.top"]];
 }
 
 -(void)killSpringBoard {

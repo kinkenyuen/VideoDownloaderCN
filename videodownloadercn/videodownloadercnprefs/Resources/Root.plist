@@ -58,18 +58,50 @@
 			<key>icon</key>
 			<string>NeteaseMusic.png</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>twitterEnable</string>
+			<key>label</key>
+			<string>Twitter视频</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>twitter.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>baiduTBEnable</string>
+			<key>label</key>
+			<string>百度贴吧视频</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>baiduTB.png</string>
+		</dict>
 
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>注销生效</string>
+			<string>开启后无效请注销</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>重启SpringBoard</string>
+			<string>Respring</string>
 			<key>action</key><!-- ButtonCell 触发后的action 要在XXXRootListController中实现 -->
 			<string>killSpringBoard</string>
 		</dict>
@@ -80,15 +112,9 @@
 			<key>label</key>
 			<string>功能</string>
 			<key>footerText</key>
-			<string>允许App内短视频下载保存到本地
+			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
 
-1.微信时刻视频下载，视频播放界面点按或长按呼出，基于微信7.0.2
-
-2.微博视频下载，视频预览与播放界面长按呼出，基于微博9.0.0
-
-3.网易云音乐视频下载,视频预览与播放界面长按呼出，基于网易云音乐5.8.1
-
-Version 1.0.3
+Version 1.0.4
 			</string>
 		</dict>
 		<dict>
@@ -99,7 +125,7 @@ Version 1.0.3
 			<key>footerText</key>
 			<string>Copyright (c) 2019 Ken. All rights reserved.
 
-仅用于技术研究~</string>
+用于学习交流</string>
 		</dict>
 
 		<dict>

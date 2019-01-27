@@ -77,6 +77,8 @@
     }
 }
 
+
+/*由于进度条显示问题，单独将下载逻辑写在这里*/
 %new
 - (void)downloadVideoWithURL:(NSURL *)url {
     if (url) {
