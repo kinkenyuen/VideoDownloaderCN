@@ -2,7 +2,7 @@
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = VideoDownloaderCN
-VideoDownloaderCN_FILES = WeChatMomentVideo.xm WeiboVideo.xm Neteasemusic.xm TwitterVideo.xm BaiduTB.xm lib/UAProgressView/UAProgressView.m lib/DownloaderManager/DownloaderManager.m
+VideoDownloaderCN_FILES = WeChatMomentVideo.xm WeiboVideo.xm Neteasemusic.xm TwitterVideo.xm BaiduTB.xm QQVideo.xm lib/UAProgressView/UAProgressView.m lib/DownloaderManager/DownloaderManager.m
 
 VideoDownloaderCN_CFLAGS = -fobjc-arc
 

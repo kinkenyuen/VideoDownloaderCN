@@ -65,7 +65,10 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     {
         UAProgressView *progressView = [[UAProgressView alloc] init];
         progressView.bounds = CGRectMake(0, 0, 100, 100);
-        progressView.center = self.progressWindow.center;
+        CGFloat x = self.progressWindow.bounds.size.width * 0.5;
+        CGFloat y = self.progressWindow.bounds.size.height *0.5;
+        CGPoint center = CGPointMake(x, y);
+        progressView.center = center;
         progressView.lineWidth = 5;
         progressView.borderWidth = 1;
         self.progressView = progressView;
@@ -90,13 +93,6 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
             [progressView removeFromSuperview];
             self.progressView = nil;
         };
-        
-        // NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
-        // if ([bundleID isEqualToString:@"com.tencent.xin"]) {
-        //     [KEY_WINDOW addSubview:progressView];
-        // }else {
-        //     [[self lastWindow] addSubview:progressView];
-        // }
         [self.progressWindow addSubview:progressView];
     }
     float value = 1.0 * totalBytesWritten / totalBytesExpectedToWrite;
@@ -122,6 +118,10 @@ didFinishDownloadingToURL:(NSURL *)location {
     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath)) {
         UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     }
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(videoDidFinishDownloaded)]) {
+        [self.delegate videoDidFinishDownloaded];
+    }
 }
 
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
@@ -137,14 +137,14 @@ didFinishDownloadingToURL:(NSURL *)location {
     [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
 }
 
-- (UIWindow *)lastWindow {
-    NSArray *windows = [UIApplication sharedApplication].windows;
-    for (UIWindow *window in [windows reverseObjectEnumerator]) {
-        if ([window isKindOfClass:[UIWindow class]] && CGRectEqualToRect(window.bounds, [UIScreen mainScreen].bounds)) {
-            return window;
-        }
-    }
-    return [UIApplication sharedApplication].keyWindow;
-}
+// - (UIWindow *)lastWindow {
+//     NSArray *windows = [UIApplication sharedApplication].windows;
+//     for (UIWindow *window in [windows reverseObjectEnumerator]) {
+//         if ([window isKindOfClass:[UIWindow class]] && CGRectEqualToRect(window.bounds, [UIScreen mainScreen].bounds)) {
+//             return window;
+//         }
+//     }
+//     return [UIApplication sharedApplication].keyWindow;
+// }
 
 @end

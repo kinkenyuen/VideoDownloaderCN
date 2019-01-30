@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol DownloaderManagerDelegeate <NSObject>
+/*下载完成回调*/
+- (void)videoDidFinishDownloaded;
+
+@end
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DownloaderManager : NSObject
+@property (nonatomic, weak) id<DownloaderManagerDelegeate> delegate;
 
 + (instancetype)sharedDownloaderManager;
 
