@@ -1,13 +1,23 @@
 #import <UIKit/UIKit.h>
 #import "lib/DownloaderManager/DownloaderManager.h"
+#import "lib/MBProgressHUD/MBProgressHUD.h"
+
+#define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 
 @interface QQReadInJoySubsVideoStateView : UIView 
+- (void)downloadVideo;
 @end
 
 @interface QQReadInJoyVideoView :UIView <DownloaderManagerDelegeate>
 @end
 
 @interface QQReadLitePlayer
+@end
+
+@interface RIJShortVideoCell 
+@property(nonatomic, readonly, nullable) UIResponder *nextResponder;
+
+- (void)downloadVideo;
 @end
  
 %hook QQReadInJoySubsVideoStateView
@@ -23,33 +33,54 @@
 
 %new
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender {
+    //解决手势触发两次
     if (sender.state == UIGestureRecognizerStateBegan) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"下载该视频?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
-        [alert show];
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+        UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self downloadVideo];
+        }];
+
+        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        [alertVC addAction:dAction];
+        [alertVC addAction:cAction];
+
+        //寻找当前vc
+        id vc = [self nextResponder];
+        while (vc) {
+            if ([vc isKindOfClass:%c(UIViewController)])   
+            {
+                break;
+            }else vc = [vc nextResponder];
+        }
+        if ([vc isKindOfClass:%c(UIViewController)]) {
+            vc = (UIViewController *)vc;
+            [vc presentViewController:alertVC animated:YES completion:nil];
+        }
     }
 }
 
 %new
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        NSURL *url = nil; 
-        QQReadInJoyVideoView *videoView = MSHookIvar<QQReadInJoyVideoView *>(self,"_delegate");
-        if (videoView) {
-            NSArray *arr = objc_getAssociatedObject(videoView,@selector(videoURLArray));
-            if (arr && [arr isKindOfClass:%c(NSArray)] && arr.count > 0){
-                NSString *urlString = arr[0];
-                if (urlString && [urlString isKindOfClass:%c(NSString)]) {
-                url = [NSURL URLWithString:urlString];
-                }
-            }else {
-                url = objc_getAssociatedObject(videoView,@selector(videoURL));
+- (void)downloadVideo {
+    NSURL *url = nil; 
+    QQReadInJoyVideoView *videoView = MSHookIvar<QQReadInJoyVideoView *>(self,"_delegate");
+    if (videoView) {
+        NSArray *arr = objc_getAssociatedObject(videoView,@selector(videoURLArray));
+        if (arr && [arr isKindOfClass:%c(NSArray)] && arr.count > 0){
+            NSString *urlString = arr[0];
+            if (urlString && [urlString isKindOfClass:%c(NSString)]) {
+            url = [NSURL URLWithString:urlString];
             }
-            if (url && [url isKindOfClass:%c(NSURL)]) {
-                DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
-                downloadManager.delegate = videoView;
-                [downloadManager setProgressViewWindow:self];
-                [downloadManager downloadVideoWithURL:url];   
-            }
+        }else {
+            url = objc_getAssociatedObject(videoView,@selector(videoURL));
+        }
+        if (url && [url isKindOfClass:%c(NSURL)]) {
+            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+            downloadManager.delegate = videoView;
+            [downloadManager downloadVideoWithURL:url];   
         }
     }
 }
@@ -69,11 +100,76 @@
     %orig;
 }
 
+static BOOL isShow = NO;
+static MBProgressHUD *hud = nil;
+%new
+- (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
+    if (!isShow)
+    {
+        hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud.mode = MBProgressHUDModeDeterminate;
+        hud.label.text = NSLocalizedString(@"Donwloading...", @"HUD loading title");
+        NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
+        hud.progressObject = progressObject;
+        [hud.button setTitle:NSLocalizedString(@"cancel", @"HUD cancel button title") forState:UIControlStateNormal];
+        [hud.button addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+        objc_setAssociatedObject(self, @selector(qqDownloadTask),
+                         downloadTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        isShow = YES;
+    }
+    hud.progressObject.completedUnitCount = [@(progress * 100)  intValue] ;
+    hud.detailsLabel.text = [NSString stringWithFormat:@"%lld%%",hud.progressObject.completedUnitCount];
+    if (hud.progressObject.fractionCompleted >= 1.f)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+            hud = nil;
+            isShow = NO;
+        });
+    }
+}
+
+%new
+- (void)cancel {
+    NSURLSessionDownloadTask *downloadTask = objc_getAssociatedObject(self, @selector(qqDownloadTask));
+    [downloadTask cancel];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [hud hideAnimated:YES];
+        hud = nil;
+        isShow = NO;
+    });
+}
+
 %new 
-- (void)videoDidFinishDownloaded {
+- (void)videoDidFinishDownloaded:(NSString *)filePath {
     objc_setAssociatedObject(self,@selector(videoURLArray),nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self,@selector(videoURL),nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [self resignFirstResponder];
+    //保存到系统相册
+    if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath)) {
+        UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+    }
+}
+
+%new
+- (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+    if (error) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Save Failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    else {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud.mode = MBProgressHUDModeCustomView;
+        NSString *recPath = @"/Library/Application Support/VideoDownloaderCN/";
+        NSString *imagePath = [recPath stringByAppendingPathComponent:@"Checkmark.png"];
+        UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+        hud.customView = [[UIImageView alloc] initWithImage:image];
+        hud.square = YES;
+        hud.label.text = NSLocalizedString(@"Done", @"HUD done title");
+        [hud hideAnimated:YES afterDelay:2.f];
+    }
+    //移除沙盒的缓存文件
+    [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
+    
 }
 
 %end
@@ -85,8 +181,6 @@
     NSURL *url = urlArray[0];
     QQReadInJoyVideoView *videoView = MSHookIvar<QQReadInJoyVideoView *>(self,"_delegate");
     if (url && [url isKindOfClass:%c(NSURL)]) {
-        NSLog(@"url:%@ - class:%@",url,[url class]);
-        NSLog(@"videoView:%@",videoView);
         objc_setAssociatedObject(videoView,@selector(videoURL),url,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     %orig;
@@ -100,7 +194,7 @@
     %orig;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"下载提示" message:@"下载视频前请先点击开始播放视频" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"下载提示" message:@"下载视频前请先让视频开始播放" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alert show];
     });
 }
@@ -109,11 +203,6 @@
 
 /*竖屏全屏播放界面*/
 %hook RIJShortVideoCell
-
-- (UIView *)praiseMaskView {
-    %log;
-    return %orig;
-}
 
 - (void)setupUI {
     %orig;
@@ -126,36 +215,54 @@
 
 %new
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender {
+    //解决手势触发两次
     if (sender.state == UIGestureRecognizerStateBegan) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"下载该视频?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定",nil];
-        [alert show];
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+        UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self downloadVideo];
+        }];
+
+        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        [alertVC addAction:dAction];
+        [alertVC addAction:cAction];
+
+        //寻找当前vc
+        id vc = [self nextResponder];
+        while (vc) {
+            if ([vc isKindOfClass:%c(UIViewController)])   
+            {
+                break;
+            }else vc = [vc nextResponder];
+        }
+        if ([vc isKindOfClass:%c(UIViewController)]) {
+            vc = (UIViewController *)vc;
+            [vc presentViewController:alertVC animated:YES completion:nil];
+        }
     }
 }
 
 %new
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        %log;
-        NSURL *url = nil; 
-        QQReadInJoyVideoView *videoView = MSHookIvar<QQReadInJoyVideoView *>(self,"_videoView");
-        if (videoView) {
-            NSArray *arr = objc_getAssociatedObject(videoView,@selector(videoURLArray));
-            if (arr && [arr isKindOfClass:%c(NSArray)] && arr.count > 0){
-                NSString *urlString = arr[0];
-                if (urlString && [urlString isKindOfClass:%c(NSString)]) {
-                url = [NSURL URLWithString:urlString];
-                }
-            }else {
-                url = objc_getAssociatedObject(videoView,@selector(videoURL));
+- (void)downloadVideo {
+    NSURL *url = nil; 
+    QQReadInJoyVideoView *videoView = MSHookIvar<QQReadInJoyVideoView *>(self,"_videoView");
+    if (videoView) {
+        NSArray *arr = objc_getAssociatedObject(videoView,@selector(videoURLArray));
+        if (arr && [arr isKindOfClass:%c(NSArray)] && arr.count > 0){
+            NSString *urlString = arr[0];
+            if (urlString && [urlString isKindOfClass:%c(NSString)]) {
+            url = [NSURL URLWithString:urlString];
             }
-            if (url && [url isKindOfClass:%c(NSURL)]) {
-                DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
-                downloadManager.delegate = videoView;
-
-                UIView *view = MSHookIvar <UIView *>(self,"_praiseMaskView");
-                [downloadManager setProgressViewWindow:view];
-                [downloadManager downloadVideoWithURL:url];   
-            }
+        }else {
+            url = objc_getAssociatedObject(videoView,@selector(videoURL));
+        }
+        if (url && [url isKindOfClass:%c(NSURL)]) {
+            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+            downloadManager.delegate = videoView;
+            [downloadManager downloadVideoWithURL:url];   
         }
     }
 }

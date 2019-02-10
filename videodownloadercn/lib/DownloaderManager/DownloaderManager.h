@@ -1,6 +1,6 @@
 //
 //  DownloaderManager.h
-//  Test
+//  DownloaderManager
 //
 //  Created by kinken on 2019/1/27.
 //  Copyright © 2019 kinkenyuen. All rights reserved.
@@ -10,7 +10,12 @@
 
 @protocol DownloaderManagerDelegeate <NSObject>
 /*下载完成回调*/
-- (void)videoDidFinishDownloaded;
+- (void)videoDidFinishDownloaded:(NSString * _Nonnull)filePath;
+
+/**
+ 下载进度
+ */
+- (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask;
 
 @end
 
@@ -23,7 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)downloadVideoWithURL:(NSURL *)url;
 
-- (void)setProgressViewWindow:(UIView *)window;
 @end
 
 NS_ASSUME_NONNULL_END

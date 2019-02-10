@@ -6,7 +6,8 @@
 			"com.netease.cloudmusic",
 			"com.atebits.Tweetie2",
 			"com.baidu.tieba",
-			"com.tencent.mqq"
+			"com.tencent.mqq",
+			"com.kinkenyuen.Youtube-Monkey"
 		);
 	};
 }
