@@ -106,6 +106,22 @@
 			<key>icon</key>
 			<string>baiduTB.png</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>toutiaoEnable</string>
+			<key>label</key>
+			<string>今日头条视频(含Pro版)</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>toutiao.png</string>
+		</dict>
 
 		<dict>
 			<key>cell</key>
@@ -130,7 +146,7 @@
 			<key>footerText</key>
 			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
 
-Version 1.1.0
+Version 1.1.1
 			</string>
 		</dict>
 		<dict>

@@ -7,6 +7,8 @@
 			"com.atebits.Tweetie2",
 			"com.baidu.tieba",
 			"com.tencent.mqq",
+			"com.ss.iphone.article.News",
+			"com.ss.iphone.article.NewsSocial",
 			"com.kinkenyuen.Youtube-Monkey"
 		);
 	};
