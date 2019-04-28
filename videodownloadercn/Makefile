@@ -7,7 +7,7 @@ VideoDownloaderCN_FILES = WeChatMomentVideo.xm WeiboVideo.xm Neteasemusic.xm Twi
 VideoDownloaderCN_CFLAGS = -fobjc-arc
 
 export ARCHS = armv7 armv7s arm64
-export TARGET = iphone:clang:11.2:8.0
+export TARGET = iphone:clang:12.1.2:8.0
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

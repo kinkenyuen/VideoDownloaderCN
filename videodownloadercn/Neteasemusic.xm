@@ -32,7 +32,7 @@
 @interface NMVideoPlayController : UIViewController
 @end
 
-@interface NELivePlayerController : UIViewController
+@interface __NELivePlayerWrapper : NSObject
 @end
 
 
@@ -84,7 +84,7 @@
 %new
 - (void)downloadVideo {
     NSURL *url = nil;
-    //拿到对应cell上的视频url
+    //视频tab界面
     id targetCell = [[self nextResponder] nextResponder];
     if ([targetCell isKindOfClass:%c(NMDiscoveryVideoCell)]) {
         NMShortVideo *discoveryVideo = MSHookIvar<NMShortVideo *>(targetCell, "_discoveryVideo");
@@ -97,9 +97,6 @@
                 }
             }
         }
-        /**
-         拿到视频url下载
-         */
         if (url)
         {
             DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
@@ -108,8 +105,6 @@
         }
     }
 }
-
-
 
 static BOOL isShow = NO;
 static MBProgressHUD *hud = nil;
@@ -185,9 +180,6 @@ static MBProgressHUD *hud = nil;
 
 #pragma mark - NMVideoPlayView
 
-/**
- 全屏播放视频下载
- */
 %hook NMVideoPlayView
 
 - (id)initWithFrame:(struct CGRect)arg1 contextType:(unsigned long long)arg2 {
@@ -249,26 +241,27 @@ static MBProgressHUD *hud = nil;
     }
         
     /**
-     情况2
+     情况2，
      */
-    NMVideoPlayController *targetVC = MSHookIvar<NMVideoPlayController *>(self, "_delegate");
+    NMVideoPlayController *targetVC = MSHookIvar<NMVideoPlayController *>(self, "_playViewDelegate");
     if ([targetVC isKindOfClass:%c(NMVideoPlayController)]) {
+        NSLog(@"1");
         url = MSHookIvar<NSURL *>(targetVC, "_videoUrl");
     }
         
     /**
-     情况3
+     情况3 关注人页面打开的视频
      */
-    NELivePlayerController *nelPlayer = MSHookIvar<NELivePlayerController *>(targetVC, "_nelPlayer");
-    if ([nelPlayer isKindOfClass:%c(NELivePlayerController)]) {
-        NSString *_urlString = MSHookIvar<NSString *>(nelPlayer, "_urlString");
-        if (_urlString) {
-            url = [NSURL URLWithString:_urlString];
+    __NELivePlayerWrapper *nelPlayer = MSHookIvar<__NELivePlayerWrapper *>(targetVC, "_player");
+    if ([nelPlayer isKindOfClass:%c(__NELivePlayerWrapper)]) {
+        NSLog(@"2");
+        NSURL *contentURL = MSHookIvar<NSURL *>(nelPlayer, "_contentURL");
+        if (contentURL) {
+            NSLog(@"3");
+            url = contentURL;
         }
     }
-    /**
-     拿到视频url下载
-     */
+
     if (url)
     {
         DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
@@ -277,8 +270,6 @@ static MBProgressHUD *hud = nil;
     }
 }
 
-// static BOOL isShow = NO;
-// static MBProgressHUD *hud = nil;
 %new
 - (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
     if (!isShow)

@@ -1,4 +1,23 @@
 #include "KenRootListController.h"
+#include <spawn.h>
+
+//system函数执行命令的替换方法
+extern char **environ;
+void run_cmd(char *cmd)
+{
+	pid_t pid;
+	char *argv[] = {"sh", "-c", cmd, NULL};
+	int status;
+
+	status = posix_spawn(&pid, "/bin/sh", NULL, NULL, argv, environ);
+	if (status == 0)
+	{
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("waitpid");
+		}
+	}
+}
 
 @implementation KenRootListController
 
@@ -18,7 +37,8 @@
 }
 
 -(void)killSpringBoard {
-	system("killall SpringBoard");
+	// system("killall SpringBoard");
+	run_cmd("killall -9 SpringBoard");
 }
 
 @end

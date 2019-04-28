@@ -52,20 +52,29 @@
 				if ([variant isKindOfClass:%c(TFSTwitterEntityMediaVideoVariant)])
 				{
 					if ([[variant contentType] isEqualToString:@"video/mp4"]) {
+                        //如果是视频
 						//截取标题字符串
 						NSString *url = [variant url];
-						NSRange vidRang = [url localizedStandardRangeOfString:@"vid/"];
-					    NSString *subString = [url substringFromIndex:(vidRang.location + vidRang.length)];
-					    NSRange tmpRang = [subString localizedStandardRangeOfString:@"/"];
-					    NSString *title = [subString substringToIndex:tmpRang.location];
-
-						UIAlertAction *dAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            				DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
-							downloadManager.delegate = self;
-							[downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
-        				}];
-
-        				[alertVC addAction:dAction];
+                        if ([url containsString:@"vid/"]) {
+                            NSRange vidRang = [url localizedStandardRangeOfString:@"vid/"];
+                            NSString *subString = [url substringFromIndex:(vidRang.location + vidRang.length)];
+                            NSRange tmpRang = [subString localizedStandardRangeOfString:@"/"];
+                            NSString *title = [subString substringToIndex:tmpRang.location];
+                            UIAlertAction *dAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+                            downloadManager.delegate = self;
+                            [downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
+                            }];
+                            [alertVC addAction:dAction];
+                        }else {
+                            //如果是GIF
+                            UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download GIF" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+                            downloadManager.delegate = self;
+                            [downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
+                            }];
+                            [alertVC addAction:dAction];
+                        }
 					}
 				}
 			}
