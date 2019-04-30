@@ -201,7 +201,7 @@ static MBProgressHUD *hud = nil;
     {
         hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
         hud.mode = MBProgressHUDModeDeterminate;
-        hud.label.text = NSLocalizedString(@"Donwloading...", @"HUD loading title");
+        hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
         NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
         hud.progressObject = progressObject;
         [hud.button setTitle:NSLocalizedString(@"cancel", @"HUD cancel button title") forState:UIControlStateNormal];
