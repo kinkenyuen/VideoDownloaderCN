@@ -22,6 +22,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DownloaderManager : NSObject
+@property (nonatomic, strong) NSString *outputPath;
 @property (nonatomic, weak) id<DownloaderManagerDelegeate> delegate;
 
 + (instancetype)sharedDownloaderManager;

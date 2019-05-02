@@ -41,4 +41,8 @@ void run_cmd(char *cmd)
 	run_cmd("killall -9 SpringBoard");
 }
 
+- (void)donate {
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/kinkenyuen?locale.x=zh_XC"]];
+}
+
 @end

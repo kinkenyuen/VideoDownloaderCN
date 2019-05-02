@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "lib/DownloaderManager/DownloaderManager.h"
 #import "lib/MBProgressHUD/MBProgressHUD.h"
-#import "lib/YouTubeVideo/YouTubeVideo.h"
+#import "lib/VideoAudioComposition/VideoAudioComposition.h"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 
@@ -18,6 +18,8 @@
 
 @interface YTContentVideoPlayerOverlayViewController : UIViewController <DownloaderManagerDelegeate, NSURLSessionDelegate>
 @property(retain, nonatomic) MLNerdStatsPlaybackData *nerdStatsPlaybackData;
+@property(nonatomic, strong)NSURL *audioURL;
+@property(nonatomic, strong)NSURL *videoURL;
 @end
 
 @interface YTIFormatStream
@@ -32,14 +34,17 @@
 @property(readonly, nonatomic) YTIFormatStream *formatStream;
 @end
 
-static double totalMediaTime = 0.f;
-static BOOL isShow = NO;
-static MBProgressHUD *hud = nil;
-
+static double totalMediaTime = 0.f; //视频时间长度
+static BOOL isAllDownloadTaskFinish = NO;   //下载任务完成标记
+static BOOL isShow = NO;    //hud显示标记
+static MBProgressHUD *hud = nil;    
+static int currentProgress = 0; //100表示完成一个任务，叠加
 static NSString *audioFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"VideoDownloaderCN.m4a"];
 static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"VideoDownloaderCN.mp4"];
 
 %hook YTContentVideoPlayerOverlayViewController
+%property(nonatomic, strong)NSURL *audioURL;
+%property(nonatomic, strong)NSURL *videoURL;
 
 - (void)viewDidLoad {
     %orig;
@@ -64,13 +69,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
             if ([formatStream itag] == 140)
             {
                 NSString *audioURLString = [formatStream URL];
-                NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
-                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:audioURLString]];
-                NSString *string = [NSString stringWithFormat:@"bytes=%lu-",(unsigned long)0];
-                [request setValue:string forHTTPHeaderField:@"Range"];
-                NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request];
-                downloadTask.taskDescription = @"audioTask";
-                [downloadTask resume]; 
+                self.audioURL = [NSURL URLWithString:audioURLString];
                 break;
             }
         }
@@ -85,17 +84,14 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
             NSString *mimeType = [formatStream mimeType];
             if (qualityLabel && [mimeType containsString:@"video"]) {
                 UIAlertAction *action = [UIAlertAction actionWithTitle:qualityLabel style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    //取视频URL
                     NSString *urlString = [formatStream URL];
                     if (urlString) {
-                        NSURL *videoFileURL = [NSURL URLWithString:urlString];  
-                        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
-                        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:videoFileURL];
-                        NSString *string = [NSString stringWithFormat:@"bytes=%lu-",(unsigned long)0];
-                        [request setValue:string forHTTPHeaderField:@"Range"];
-
-                        NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request];
-                        [downloadTask resume];   
+                        self.videoURL = [NSURL URLWithString:urlString];  
+                        //先下载音频再下载视频
+                        DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+                        downloadManager.outputPath = audioFilePath;
+                        downloadManager.delegate = self;
+                        [downloadManager downloadVideoWithURL:self.audioURL];  
                     }
                 }];
                 [alertVC addAction:action];
@@ -103,50 +99,35 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
         }
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
         [alertVC addAction:cancel];
-        [self presentViewController:alertVC animated:NO completion:nil];
+        [self presentViewController:alertVC animated:YES completion:nil];
     }
 }
 
 %new
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(int64_t)bytesWritten
- totalBytesWritten:(int64_t)totalBytesWritten
-totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    if ([downloadTask.taskDescription isEqualToString:@"audioTask"]) {
-
-    }else {
-        if (!isShow) {
-            hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
-            hud.mode = MBProgressHUDModeDeterminate;
-            hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
-            NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
-            hud.progressObject = progressObject;
-            [hud.button setTitle:NSLocalizedString(@"cancel", @"HUD cancel button title") forState:UIControlStateNormal];
-            [hud.button addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
-            objc_setAssociatedObject(self, @selector(youtubeDownloadTask),
-                             downloadTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            isShow = YES;
-            NSLog(@"1");
-        }
-        float progress = 1.0 * totalBytesWritten / totalBytesExpectedToWrite;
-        hud.progressObject.completedUnitCount = [@(progress * 100)  intValue];
-        hud.detailsLabel.text = [NSString stringWithFormat:@"%lld%%",hud.progressObject.completedUnitCount];
-        if (hud.progressObject.fractionCompleted >= 1.f)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [hud hideAnimated:YES];
-                hud = nil;
-                isShow = NO;
-            });
-        }
+- (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
+    if (!isShow)
+    {
+        hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud.mode = MBProgressHUDModeDeterminate;
+        hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
+        NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:300];
+        hud.progressObject = progressObject;
+        [hud.button setTitle:NSLocalizedString(@"cancel", @"HUD cancel button title") forState:UIControlStateNormal];
+        [hud.button addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+        isShow = YES;
     }
+    objc_setAssociatedObject(self, @selector(ytDownloadTask),
+                         downloadTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    hud.progressObject.completedUnitCount = [@(progress * 100) intValue] + currentProgress;
+    hud.detailsLabel.text = [NSString stringWithFormat:@"%lld%%",hud.progressObject.completedUnitCount / 3];
 }
 
 %new
 - (void)cancel {
-    NSURLSessionDownloadTask *downloadTask = objc_getAssociatedObject(self, @selector(youtubeDownloadTask));
+    NSURLSessionDownloadTask *downloadTask = objc_getAssociatedObject(self, @selector(ytDownloadTask));
     [downloadTask cancel];
+    isAllDownloadTaskFinish = NO;
+    currentProgress = 0;
     dispatch_async(dispatch_get_main_queue(), ^{
         [hud hideAnimated:YES];
         hud = nil;
@@ -154,32 +135,49 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     });
 }
 
-%new 
-- (void)URLSession:(NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-didFinishDownloadingToURL:(NSURL *)location {
-    if ([downloadTask.taskDescription isEqualToString:@"audioTask"]) {
-        //移动下载的文件，否则会在临时目录被覆盖删除
-        [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:audioFilePath] error:nil];
-        NSLog(@"audioPath:%@",audioFilePath);
+%new
+- (void)videoDidFinishDownloaded:(NSString * _Nonnull)filePath {
+    if ([filePath isEqualToString:videoFilePath])
+    {
+        //所有下载任务完成
+        isAllDownloadTaskFinish = YES;
+        currentProgress += 100;
+    }
+
+    if (isAllDownloadTaskFinish == NO)
+    {
+        //下载视频
+        DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+        downloadManager.outputPath = videoFilePath;
+        downloadManager.delegate = self;
+        [downloadManager downloadVideoWithURL:self.videoURL]; 
+        currentProgress += 100; 
     }else {
-        //移动下载的文件，否则会在临时目录被覆盖删除
-        [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:videoFilePath] error:nil];
-        NSLog(@"videoPath:%@",videoFilePath);
-        if ([[NSFileManager defaultManager] fileExistsAtPath:audioFilePath])
-        {
-            YouTubeVideo *video = [[YouTubeVideo alloc] init];
-            video.compositionName = @"final.mp4";
-            [video compositionVideoUrl:[NSURL fileURLWithPath:videoFilePath] videoTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake([@(totalMediaTime) intValue], 1)) audioUrl:[NSURL fileURLWithPath:audioFilePath] audioTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake([@(totalMediaTime) intValue], 1)) success:^(NSURL * _Nonnull fileUrl) {
-                NSLog(@"合成成功,%@",fileUrl);
-                NSString *filePath = [fileUrl path];
-                NSLog(@"filePath:%@",filePath);
-                if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath)) {
-                    NSLog(@"1");
-                    UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-                }
-            }];
-        }
+        //合成视频
+        VideoAudioComposition *vaComposition = [[VideoAudioComposition alloc] init];
+        //合成后的文件名
+        vaComposition.compositionName = @"youtubeVideo.mp4";
+        vaComposition.outputFileType = AVFileTypeMPEG4;
+        vaComposition.progressBlock = ^(float progress) {
+            hud.progressObject.completedUnitCount = [@(progress * 100) intValue] + currentProgress;
+            hud.detailsLabel.text = [NSString stringWithFormat:@"%lld%%",hud.progressObject.completedUnitCount / 3];
+            if (hud.progressObject.fractionCompleted >= 1.f)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [hud hideAnimated:YES];
+                    hud = nil;
+                    isShow = NO;
+                });
+            }
+        };
+        CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake((int)totalMediaTime + 1,1));
+        [vaComposition compositionVideoUrl:[NSURL fileURLWithPath:videoFilePath] videoTimeRange:videoTimeRange audioUrl:[NSURL fileURLWithPath:audioFilePath] audioTimeRange:videoTimeRange success:^(NSURL *fileUrl){
+            //保存到系统相册
+            NSString *path = [fileUrl path];
+            if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path)) {
+                UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+            }
+        }];
     }
 }
 
@@ -204,6 +202,30 @@ didFinishDownloadingToURL:(NSURL *)location {
     [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:audioFilePath error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:videoFilePath error:nil];
+
+    //重置标记
+    isAllDownloadTaskFinish = NO;
+    currentProgress = 0;
 }
 
 %end
+
+/**
+ 插件开关
+ */
+static BOOL ytEnable = NO;
+
+static void loadPrefs() {
+    NSMutableDictionary *settings = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.kinkenyuen.videodownloadercnprefs.plist"];
+    ytEnable = [settings objectForKey:@"ytEnable"] ? [[settings objectForKey:@"ytEnable"] boolValue] : NO;
+}
+
+%ctor {
+    loadPrefs();
+    if (ytEnable)
+    {
+        %init(_ungrouped);
+    }
+    
+}
+

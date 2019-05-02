@@ -9,7 +9,8 @@
 			"com.tencent.mqq",
 			"com.ss.iphone.article.News",
 			"com.ss.iphone.article.NewsSocial",
-			"com.kinkenyuen.Youtube-Monkey"
+			"com.tencent.QQMusic",
+			"com.google.ios.youtube"
 		);
 	};
 }

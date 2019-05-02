@@ -50,6 +50,22 @@
 			<key>defaults</key>
 			<string>com.kinkenyuen.videodownloadercnprefs</string>
 			<key>key</key>
+			<string>qmEnable</string>
+			<key>label</key>
+			<string>QQ音乐视频</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>qm.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
 			<string>weiboEnable</string>
 			<key>label</key>
 			<string>微博视频</string>
@@ -73,22 +89,6 @@
 			<true/>
 			<key>icon</key>
 			<string>NeteaseMusic.png</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.kinkenyuen.videodownloadercnprefs</string>
-			<key>key</key>
-			<string>twitterEnable</string>
-			<key>label</key>
-			<string>Twitter视频</string>
-			<key>hasIcon</key>
-			<true/>
-			<key>icon</key>
-			<string>twitter.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -122,6 +122,38 @@
 			<key>icon</key>
 			<string>toutiao.png</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>twitterEnable</string>
+			<key>label</key>
+			<string>Twitter</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>twitter.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>ytEnable</string>
+			<key>label</key>
+			<string>YouTube</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>yt.png</string>
+		</dict>
 
 		<dict>
 			<key>cell</key>
@@ -142,29 +174,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>功能</string>
-			<key>footerText</key>
-			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
-
-Version 1.1.2
-			</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>描述</string>
-			<key>footerText</key>
-			<string>Copyright (c) 2019 Ken. All rights reserved.
-
-用于学习交流</string>
-		</dict>
-
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Created by</string>
+			<string>Developer</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -177,6 +187,36 @@ Version 1.1.2
 			<true/>
 			<key>icon</key>
 			<string>Ken.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>请我喝杯奶茶</string>
+			<key>action</key><!-- ButtonCell 触发后的action 要在XXXRootListController中实现 -->
+			<string>donate</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>功能</string>
+			<key>footerText</key>
+			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
+
+Version 1.2.0
+			</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>描述</string>
+			<key>footerText</key>
+			<string>Copyright (c) 2019 Ken. All rights reserved.
+
+用于学习交流</string>
 		</dict>
 	</array>
 	<key>title</key>

@@ -1,6 +1,5 @@
 //
-//  YouTubeVideo.h
-//  Test
+//  VideoAudioComposition.h
 //
 //  Created by kinken on 2019/2/1.
 //  Copyright © 2019 kinkenyuen. All rights reserved.
@@ -10,7 +9,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@interface YouTubeVideo : NSObject
+@interface VideoAudioComposition : NSObject
 
 /**
  合成成功block
@@ -18,6 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileUrl 合成后的地址
  */
 typedef void(^SuccessBlcok)(NSURL *fileUrl);
+
+/**
+ 进度block
+ 
+ @param fileUrl 合成后的地址
+ */
+typedef void(^ProgressBlcok)(float progress);
+
+@property (nonatomic,copy) ProgressBlcok progressBlock;
 
 /**
  合成后的名字

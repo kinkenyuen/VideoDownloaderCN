@@ -70,8 +70,14 @@ didFinishDownloadingToURL:(NSURL *)location {
     formatter.dateFormat = @"YYYYMMddHHmmss";
     NSString *dateString = [formatter stringFromDate:currentDate];
     
-    //沙盒路径
-    NSString *filePath = [[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:dateString] stringByAppendingString:@".mp4"];
+    NSString *filePath = nil;
+    if (self.outputPath)
+    {
+        filePath = self.outputPath;
+    }else {
+        //默认沙盒路径
+        filePath = [[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:dateString] stringByAppendingString:@".mp4"];
+    }
     
     //移动下载的文件，否则会在临时目录被覆盖删除
     [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:filePath] error:nil];
