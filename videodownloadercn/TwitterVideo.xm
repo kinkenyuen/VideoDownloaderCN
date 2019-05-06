@@ -24,6 +24,9 @@
 @property(readonly, copy, nonatomic) NSString *contentType; 
 @end
 
+@interface T1MutableSlideshowSlideViewModel : NSObject
+@end
+
 
 %hook TAVPlayerView
 
@@ -41,10 +44,19 @@
     //解决手势触发两次
     if (sender.state == UIGestureRecognizerStateBegan) {
         UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        id targetVC = [[[[self nextResponder] nextResponder] nextResponder] nextResponder];
+        id targetVC = [self nextResponder];
+        while(targetVC) {
+            if ([targetVC isKindOfClass:%c(T1SlideshowViewController)])
+            {   
+                break;
+            }else {
+                targetVC = [targetVC nextResponder];
+            }
+        }
     	if ([targetVC isKindOfClass:%c(T1SlideshowViewController)]) {
 			T1SlideshowSlide *currentSlide = MSHookIvar<T1SlideshowSlide *>(targetVC, "_currentSlide");
-			TFSTwitterEntityMedia *media = MSHookIvar<TFSTwitterEntityMedia *>(currentSlide, "_media");
+            T1MutableSlideshowSlideViewModel *viewModel = MSHookIvar<T1MutableSlideshowSlideViewModel *>(currentSlide,"_viewModel");    
+			TFSTwitterEntityMedia *media = MSHookIvar<TFSTwitterEntityMedia *>(viewModel, "_media");
 			TFSTwitterEntityMediaVideoInfo *videoInfo = MSHookIvar<TFSTwitterEntityMediaVideoInfo *>(media,"_videoInfo");
 			NSArray *variants = MSHookIvar<NSArray *>(videoInfo,"_variants");
 			for (int i = 0;i < variants.count;i++) {
@@ -168,6 +180,14 @@ static MBProgressHUD *hud = nil;
     //移除沙盒的缓存文件
     [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
     
+}
+
+%end
+
+%hook T1SlideshowViewController
+
+- (void)slideshowSeekController:(id)arg1 didLongPressWithRecognizer:(id)arg2 {
+    //屏蔽手势冲突
 }
 
 %end

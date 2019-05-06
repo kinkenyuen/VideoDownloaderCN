@@ -195,6 +195,10 @@
 			<string>请我喝杯奶茶</string>
 			<key>action</key><!-- ButtonCell 触发后的action 要在XXXRootListController中实现 -->
 			<string>donate</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>paypal.png</string>
 		</dict>
 
 		<dict>
@@ -205,7 +209,7 @@
 			<key>footerText</key>
 			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
 
-Version 1.2.0
+Version 1.2.1
 			</string>
 		</dict>
 		<dict>

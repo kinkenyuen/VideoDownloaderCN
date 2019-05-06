@@ -10,7 +10,7 @@
 			"com.ss.iphone.article.News",
 			"com.ss.iphone.article.NewsSocial",
 			"com.tencent.QQMusic",
-			"com.google.ios.youtube"
+			"com.google.ios.youtube",
 		);
 	};
 }
