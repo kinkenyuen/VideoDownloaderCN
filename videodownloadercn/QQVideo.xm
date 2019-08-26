@@ -89,7 +89,7 @@
 
 %hook QQReadInJoyVideoView
 
-- (void)playVideoWithURL:(id)arg1 timeOffset:(double)arg2 isLocal:(_Bool)arg3 videoType:(unsigned long long)arg4 {
+- (void) playVideoWithURL:(id)arg1 timeOffset:(double)arg2 isLocal:(BOOL)arg3 {
     objc_setAssociatedObject(self,@selector(videoURLArray),arg1,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     %orig;
 }
