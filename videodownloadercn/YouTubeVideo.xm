@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <Photos/Photos.h>
 #import "lib/DownloaderManager/DownloaderManager.h"
 #import "lib/MBProgressHUD/MBProgressHUD.h"
 #import "lib/VideoAudioComposition/VideoAudioComposition.h"
@@ -61,7 +62,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
         MLHAMPlayer *player = [nerdStatsPlaybackData player];
         totalMediaTime = [player totalMediaTime];
 
-        //下载音频
+        //获取音频URL
         NSArray *selectableAudioFormats = [player selectableAudioFormats];
         for (id audioFormat in selectableAudioFormats) {
             MLFormat *mlFormat = (MLFormat *)audioFormat;
@@ -74,7 +75,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
             }
         }
 
-        //取视频画质与视频url
+        //取视频画质与视频URL
         UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"select video quality" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         NSArray *selectableVideoFormats = [player selectableVideoFormats];
         for (id videoFormat in selectableVideoFormats) {
@@ -172,11 +173,16 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
         };
         CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake((int)totalMediaTime + 1,1));
         [vaComposition compositionVideoUrl:[NSURL fileURLWithPath:videoFilePath] videoTimeRange:videoTimeRange audioUrl:[NSURL fileURLWithPath:audioFilePath] audioTimeRange:videoTimeRange success:^(NSURL *fileUrl){
-            //保存到系统相册
-            NSString *path = [fileUrl path];
-            if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path)) {
-                UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-            }
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                if (status == PHAuthorizationStatusAuthorized)
+                {
+                    //保存到系统相册
+                    NSString *path = [fileUrl path];
+                    if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path)) {
+                        UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+                    }
+                }
+            }];
         }];
     }
 }

@@ -4,10 +4,7 @@
 #import "lib/DownloaderManager/DownloaderManager.h"
 #import "lib/MBProgressHUD/MBProgressHUD.h"
 
-@interface TAVPlayerView :UIView <DownloaderManagerDelegeate>
-@property(nonatomic, readonly, nullable) UIResponder *nextResponder;
-
-@end
+#define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 
 @interface T1SlideshowSlide
 @end
@@ -27,16 +24,16 @@
 @interface T1MutableSlideshowSlideViewModel : NSObject
 @end
 
+@interface T1SlideshowViewController : UIViewController <DownloaderManagerDelegeate>
+@end
 
-%hook TAVPlayerView
+%hook T1SlideshowViewController
 
-- (id)initWithFrame:(struct CGRect)arg1 {
-	id selfView = %orig;
-    if ([selfView isKindOfClass:%c(TAVPlayerView)]) {
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
-        [selfView addGestureRecognizer:longPress];
-    }
-    return selfView;
+- (void)viewDidLoad {
+    %orig;
+    UIView *contentView = MSHookIvar<UIView *>(self, "_contentView");
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+    [contentView addGestureRecognizer:longPress];
 }
 
 %new
@@ -44,71 +41,46 @@
     //解决手势触发两次
     if (sender.state == UIGestureRecognizerStateBegan) {
         UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        id targetVC = [self nextResponder];
-        while(targetVC) {
-            if ([targetVC isKindOfClass:%c(T1SlideshowViewController)])
-            {   
-                break;
-            }else {
-                targetVC = [targetVC nextResponder];
+        T1SlideshowSlide *currentSlide = MSHookIvar<T1SlideshowSlide *>(self, "_currentSlide");
+        T1MutableSlideshowSlideViewModel *viewModel = MSHookIvar<T1MutableSlideshowSlideViewModel *>(currentSlide,"_viewModel");    
+        TFSTwitterEntityMedia *media = MSHookIvar<TFSTwitterEntityMedia *>(viewModel, "_media");
+        TFSTwitterEntityMediaVideoInfo *videoInfo = MSHookIvar<TFSTwitterEntityMediaVideoInfo *>(media,"_videoInfo");
+        NSArray *variants = MSHookIvar<NSArray *>(videoInfo,"_variants");
+        for (int i = 0;i < variants.count;i++) {
+            TFSTwitterEntityMediaVideoVariant *variant = variants[i];
+            if ([variant isKindOfClass:%c(TFSTwitterEntityMediaVideoVariant)])
+            {
+                if ([[variant contentType] isEqualToString:@"video/mp4"]) {
+                    //如果是视频
+                    //截取标题字符串
+                    NSString *url = [variant url];
+                    if ([url containsString:@"vid/"]) {
+                        NSRange vidRang = [url localizedStandardRangeOfString:@"vid/"];
+                        NSString *subString = [url substringFromIndex:(vidRang.location + vidRang.length)];
+                        NSRange tmpRang = [subString localizedStandardRangeOfString:@"/"];
+                        NSString *title = [subString substringToIndex:tmpRang.location];
+                        UIAlertAction *dAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+                        downloadManager.delegate = self;
+                        [downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
+                        }];
+                        [alertVC addAction:dAction];
+                    }else {
+                        //如果是GIF
+                        UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download GIF" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+                        downloadManager.delegate = self;
+                        [downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
+                        }];
+                        [alertVC addAction:dAction];
+                    }
+                }
             }
         }
-    	if ([targetVC isKindOfClass:%c(T1SlideshowViewController)]) {
-			T1SlideshowSlide *currentSlide = MSHookIvar<T1SlideshowSlide *>(targetVC, "_currentSlide");
-            T1MutableSlideshowSlideViewModel *viewModel = MSHookIvar<T1MutableSlideshowSlideViewModel *>(currentSlide,"_viewModel");    
-			TFSTwitterEntityMedia *media = MSHookIvar<TFSTwitterEntityMedia *>(viewModel, "_media");
-			TFSTwitterEntityMediaVideoInfo *videoInfo = MSHookIvar<TFSTwitterEntityMediaVideoInfo *>(media,"_videoInfo");
-			NSArray *variants = MSHookIvar<NSArray *>(videoInfo,"_variants");
-			for (int i = 0;i < variants.count;i++) {
-				TFSTwitterEntityMediaVideoVariant *variant = variants[i];
-				if ([variant isKindOfClass:%c(TFSTwitterEntityMediaVideoVariant)])
-				{
-					if ([[variant contentType] isEqualToString:@"video/mp4"]) {
-                        //如果是视频
-						//截取标题字符串
-						NSString *url = [variant url];
-                        if ([url containsString:@"vid/"]) {
-                            NSRange vidRang = [url localizedStandardRangeOfString:@"vid/"];
-                            NSString *subString = [url substringFromIndex:(vidRang.location + vidRang.length)];
-                            NSRange tmpRang = [subString localizedStandardRangeOfString:@"/"];
-                            NSString *title = [subString substringToIndex:tmpRang.location];
-                            UIAlertAction *dAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
-                            downloadManager.delegate = self;
-                            [downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
-                            }];
-                            [alertVC addAction:dAction];
-                        }else {
-                            //如果是GIF
-                            UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download GIF" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
-                            downloadManager.delegate = self;
-                            [downloadManager downloadVideoWithURL:[NSURL URLWithString:url]];
-                            }];
-                            [alertVC addAction:dAction];
-                        }
-					}
-				}
-			}
-		}
-
-        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
+        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {    
         }];
         [alertVC addAction:cAction];
-
-        //寻找当前vc
-        id vc = [self nextResponder];
-        while (vc) {
-            if ([vc isKindOfClass:%c(UIViewController)])   
-            {
-                break;
-            }else vc = [vc nextResponder];
-        }
-        if ([vc isKindOfClass:%c(UIViewController)]) {
-            vc = (UIViewController *)vc;
-            [vc presentViewController:alertVC animated:YES completion:nil];
-        }
+        [self presentViewController:alertVC animated:YES completion:nil];
     }
 }
 
@@ -118,7 +90,7 @@ static MBProgressHUD *hud = nil;
 - (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
     if (!isShow)
     {
-        hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+        hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
         hud.mode = MBProgressHUDModeDeterminate;
         hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
         NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
@@ -167,7 +139,7 @@ static MBProgressHUD *hud = nil;
         [alert show];
     }
     else {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
         hud.mode = MBProgressHUDModeCustomView;
         NSString *recPath = @"/Library/Application Support/VideoDownloaderCN/";
         NSString *imagePath = [recPath stringByAppendingPathComponent:@"Checkmark.png"];
@@ -181,10 +153,6 @@ static MBProgressHUD *hud = nil;
     [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
     
 }
-
-%end
-
-%hook T1SlideshowViewController
 
 - (void)slideshowSeekController:(id)arg1 didLongPressWithRecognizer:(id)arg2 {
     //屏蔽手势冲突

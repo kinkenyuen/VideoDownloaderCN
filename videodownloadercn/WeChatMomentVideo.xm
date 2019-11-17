@@ -10,6 +10,7 @@
 - (void)onShowDownloadAlert;
 -(void)onShowActionSheet;
 - (void)addSubview:(UIView *)view;
+- (id)dataItem;
 @end
 
 @interface WCStoryActionToolBar
@@ -112,7 +113,7 @@ static MBProgressHUD *hud = nil;
 
 %new
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    
+
     if (error) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Save Failed" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alert show];
@@ -130,7 +131,7 @@ static MBProgressHUD *hud = nil;
     }
     //移除沙盒的缓存文件
     [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
-    
+
 }
 
 %end
@@ -159,7 +160,7 @@ static MBProgressHUD *hud = nil;
     WCStoryMediaItem *mediaItem = nil;
     //在这里拿到一个WCStoryPreviewPageView对象来做保存到相册后的回调target
     WCStoryPreviewPageView *wcStoryPreviewPageView = nil;
-    
+
     if ([targetVC isKindOfClass:%c(WCStorysPreviewViewController)]) {
         WCStoryPreivewPageCollectionController *m_collectionController = MSHookIvar<WCStoryPreivewPageCollectionController *>(targetVC, "m_collectionController");
         wcStoryPreviewPageView = MSHookIvar<WCStoryPreviewPageView *>(m_collectionController, "m_playingPageView");
@@ -170,24 +171,33 @@ static MBProgressHUD *hud = nil;
             mediaItem = MSHookIvar<WCStoryMediaItem *>(dataItem, "_mediaItem");
         }
     }else if ([targetVC isKindOfClass:%c(WCStoryMultiContactPreviewViewController)]) {
+        //这里查找view逻辑不好，需要优化
         UICollectionView *m_collectionView = MSHookIvar<UICollectionView *>(targetVC, "m_collectionView");
-        UIView *cellView =[m_collectionView subviews][0];
-        if ([cellView isKindOfClass:%c(WCStoryMultiContactPreviewCell)]) {
-            WCStoryPreivewPageCollectionController *_controller = MSHookIvar<WCStoryPreivewPageCollectionController *>(cellView, "_controller");;
-            wcStoryPreviewPageView = MSHookIvar<WCStoryPreviewPageView *>(_controller, "m_playingPageView");
+        for (UIView *cellView in [m_collectionView subviews]) {
+            if ([cellView isKindOfClass:%c(WCStoryMultiContactPreviewCell)]) {
+                for (UIView *view in [cellView subviews]) {
+                    for (UIView *collectionView in [view subviews]) {
+                        for (UIView *collectionCell in [collectionView subviews]) {
+                            for (UIView *v in [collectionCell subviews]) {
+                                if (v.subviews.count > 0 && [v.subviews[0] isKindOfClass:%c(WCStoryPreviewPageView)]) {
+                                    wcStoryPreviewPageView = v.subviews[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        
-        NSMutableArray *_dataUnitArray = MSHookIvar<NSMutableArray *>(targetVC, "_dataUnitArray");
-        WCStoryDataUnit *dataUnit = _dataUnitArray[0];
-        if ([dataUnit isKindOfClass:%c(WCStoryDataUnit)]) {
-            NSMutableArray *_storyDataItemArray = MSHookIvar<NSMutableArray *>(dataUnit, "_storyDataItemArray");
-            WCStoryDataItem *dataItem = _storyDataItemArray[0];
+
+        if (wcStoryPreviewPageView && [wcStoryPreviewPageView isKindOfClass:%c(WCStoryPreviewPageView)]) {
+            WCStoryDataItem *dataItem = [wcStoryPreviewPageView dataItem];
             if ([dataItem isKindOfClass:%c(WCStoryDataItem)]) {
                 mediaItem = MSHookIvar<WCStoryMediaItem *>(dataItem, "_mediaItem");
             }
         }
     }
-    
+
     if (mediaItem && [mediaItem isKindOfClass:%c(WCStoryMediaItem)]) {
         //创建下载任务
         NSURL *url = [NSURL URLWithString:[mediaItem videoUrl]];
@@ -231,10 +241,5 @@ static void loadPrefs() {
     {
         %init(_ungrouped);
     }
-    
+
 }
-
-
-
-
-

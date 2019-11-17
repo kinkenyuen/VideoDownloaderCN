@@ -245,22 +245,19 @@ static MBProgressHUD *hud = nil;
      */
     NMVideoPlayController *targetVC = MSHookIvar<NMVideoPlayController *>(self, "_playViewDelegate");
     if ([targetVC isKindOfClass:%c(NMVideoPlayController)]) {
-        NSLog(@"1");
-        url = MSHookIvar<NSURL *>(targetVC, "_videoUrl");
+        url = MSHookIvar<NSURL *>(targetVC, "_contentUrl");
     }
         
     /**
      情况3 关注人页面打开的视频
      */
-    __NELivePlayerWrapper *nelPlayer = MSHookIvar<__NELivePlayerWrapper *>(targetVC, "_player");
-    if ([nelPlayer isKindOfClass:%c(__NELivePlayerWrapper)]) {
-        NSLog(@"2");
-        NSURL *contentURL = MSHookIvar<NSURL *>(nelPlayer, "_contentURL");
-        if (contentURL) {
-            NSLog(@"3");
-            url = contentURL;
-        }
-    }
+    // __NELivePlayerWrapper *nelPlayer = MSHookIvar<__NELivePlayerWrapper *>(targetVC, "_player");
+    // if ([nelPlayer isKindOfClass:%c(__NELivePlayerWrapper)]) {
+    //     NSURL *contentURL = MSHookIvar<NSURL *>(nelPlayer, "_contentURL");
+    //     if (contentURL) {
+    //         url = contentURL;
+    //     }
+    // }
 
     if (url)
     {

@@ -17,21 +17,29 @@
 @end
 
 @interface TTVDemandPlayer
-
 @end
 
 @interface TTVVideoPlayerView
-
 @end
 
 @interface TSVNewControlOverlayViewController : UIViewController <DownloaderManagerDelegeate>
-
 @end
 
-@interface AWEVideoPlayerController : UIViewController
-
+@interface TSVMusicVideoURLModel : NSObject
+@property(nonatomic, readonly) NSArray *urlList;
 @end
 
+@interface TSVVideoModel : NSObject
+@property(nonatomic, readonly) TSVMusicVideoURLModel *downloadAddr;
+@end
+
+@interface TTShortVideoModel : NSObject
+@property(nonatomic, readonly) TSVVideoModel *video;
+@end
+
+@interface AWEVideoPlayView : UIView
+@property(nonatomic, readonly) TTShortVideoModel *model;
+@end
 
 %hook TTVideoEngine
 
@@ -154,10 +162,8 @@ static MBProgressHUD *hud = nil;
 
 %new
 - (void)videoDidFinishDownloaded:(NSString * _Nonnull)filePath {
-    NSLog(@"filePath:%@",filePath);
     //保存到系统相册
     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath)) {
-        NSLog(@"1");
         UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     }
 }
@@ -187,7 +193,6 @@ static MBProgressHUD *hud = nil;
 %end
 
 
-
 /*小视频*/
 %hook TSVNewControlOverlayViewController
 
@@ -201,34 +206,35 @@ static MBProgressHUD *hud = nil;
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender {
     //解决手势触发两次
     if (sender.state == UIGestureRecognizerStateBegan) {
+        NSURL *url = nil;
         UIView *selfView = self.view;
         NSArray *arrViews = [[selfView superview] subviews];
         for(UIView *view in arrViews) {
             if ([view isKindOfClass:%c(AWEVideoPlayView)]) {
-                for (UIView *targetView in [view subviews]) {
-                    if ([targetView isKindOfClass:%c(AWEVideoPlayerView)]) {
-                        AWEVideoPlayerController *playerController = MSHookIvar<AWEVideoPlayerController *>(targetView,"_playerController");
-                        NSURL *contentURL = MSHookIvar<NSURL *>(playerController,"_contentURL"); 
-                        if (contentURL)
-                        {
-                            UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-                            UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                                
-                            }];
-                            [alertVC addAction:cAction];
-
-                            UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                                DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
-                                downloadManager.delegate = self;
-                                [downloadManager downloadVideoWithURL:contentURL];
-                            }];
-                            [alertVC addAction:dAction];
-
-                            [self presentViewController:alertVC animated:YES completion:nil];
-                        }
-                    }
-                }
+                TTShortVideoModel *model = [(AWEVideoPlayView * )view model];
+                TSVVideoModel *videoModel = [model video];
+                TSVMusicVideoURLModel *downloadAddr = [videoModel downloadAddr];
+                NSArray *urlList = [downloadAddr urlList];
+                if (urlList.count > 0) {
+                    NSString *urlString = urlList[0];
+                    url = [NSURL URLWithString:urlString];
+                    break;
+                }    
             }
+        }
+        if (url) {
+            UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+            UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            }];
+            [alertVC addAction:cAction];
+
+            UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+            downloadManager.delegate = self;
+            [downloadManager downloadVideoWithURL:url];
+        }];
+        [alertVC addAction:dAction];
+        [self presentViewController:alertVC animated:YES completion:nil];
         }
     }
 }
