@@ -1,4 +1,4 @@
-# VideoDownloaderCN  
+# VideoDownloaderCN  (停更)
 
 个人cydia源:**[kkyuen.github.io/repo](kkyuen.github.io/repo)**
 
