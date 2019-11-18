@@ -45,4 +45,8 @@ void run_cmd(char *cmd)
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/kinkenyuen?locale.x=zh_XC"]];
 }
 
+- (void)donateViaAlipay {
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://qr.alipay.com/fkx09489hyqmmiun6rns211"]];
+}
+
 @end
