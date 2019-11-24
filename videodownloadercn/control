@@ -1,7 +1,7 @@
 Package: com.kinkenyuen.videodownloadercn
 Name: VideoDownloaderCN
 Depends: mobilesubstrate,preferenceloader
-Version: 1.3.0
+Version: 1.3.1
 Architecture: iphoneos-arm
 Description:允许App内短视频下载保存到本地	
 Maintainer: Ken <yuenkinken@icloud.com>
