@@ -106,7 +106,7 @@
 			<key>icon</key>
 			<string>NeteaseMusic.png</string>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -121,7 +121,7 @@
 			<true/>
 			<key>icon</key>
 			<string>baiduTB.png</string>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -169,6 +169,22 @@
 			<true/>
 			<key>icon</key>
 			<string>yt.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.kinkenyuen.videodownloadercnprefs</string>
+			<key>key</key>
+			<string>tbEnable</string>
+			<key>label</key>
+			<string>淘宝</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>tb.png</string>
 		</dict>
 
 		<dict>
@@ -237,7 +253,7 @@
 			<key>footerText</key>
 			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
 
-Version 1.3.1
+Version 1.3.2
 			</string>
 		</dict>
 		<dict>

@@ -35,6 +35,17 @@
 @interface __NELivePlayerWrapper : NSObject
 @end
 
+@interface __NMVideoPlayerWrapper : NSObject
+@property(copy, nonatomic) NSURL *contentURL;
+@end
+
+@interface NMSquareVideoCell : UIView <DownloaderManagerDelegeate>
+@property(retain, nonatomic) UIView *videoContainerView;
+- (void)downloadVideo;
+@end
+
+static BOOL isShow = NO;
+static MBProgressHUD *hud = nil;
 
 #pragma mark - NMDiscoveryVideoPlayView
 
@@ -106,8 +117,6 @@
     }
 }
 
-static BOOL isShow = NO;
-static MBProgressHUD *hud = nil;
 %new
 - (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
     if (!isShow)
@@ -334,6 +343,136 @@ static MBProgressHUD *hud = nil;
     [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
     
 }
+
+%end
+
+
+%hook NMSquareVideoCell
+
+- (id)initWithStyle:(long long)arg1 reuseIdentifier:(id)arg2 {
+    id ret = %orig;
+    UIView *videoContainerView = [(NMSquareVideoCell*)ret videoContainerView];
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+    [videoContainerView addGestureRecognizer:longPress];
+    return ret;
+}
+
+%new
+- (void)longPressAction:(UILongPressGestureRecognizer *)sender {
+    //解决手势触发两次
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+        UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self downloadVideo];
+        }];
+
+        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        
+        [alertVC addAction:dAction];
+        [alertVC addAction:cAction];
+
+        //寻找当前vc
+        id vc = [self nextResponder];
+        while (vc) {
+            if ([vc isKindOfClass:%c(UIViewController)])   
+            {
+                break;
+            }else vc = [vc nextResponder];
+        }
+        if ([vc isKindOfClass:%c(UIViewController)]) {
+            vc = (UIViewController *)vc;
+            [vc presentViewController:alertVC animated:YES completion:nil];
+        }
+    }
+}
+
+%new
+- (void)downloadVideo {
+    // NMVideoMLog *videoLog = [self videoLog];
+    // NMShortVideoInfo *video = [videoLog video];
+    NSURL *videoURL = nil;
+    id player = MSHookIvar<id>(self, "_player");
+    if ([player isKindOfClass:%c(__NMVideoPlayerWrapper)]) {
+        videoURL = [player contentURL];
+    }
+    if (videoURL) {
+        DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
+        downloadManager.delegate = self;
+        [downloadManager downloadVideoWithURL:videoURL];
+    }
+}
+
+%new
+- (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
+    if (!isShow)
+    {
+        hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud.mode = MBProgressHUDModeDeterminate;
+        hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
+        NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
+        hud.progressObject = progressObject;
+        [hud.button setTitle:NSLocalizedString(@"cancel", @"HUD cancel button title") forState:UIControlStateNormal];
+        [hud.button addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+        objc_setAssociatedObject(self, @selector(neteaseMusicDownloadTask),
+                         downloadTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        isShow = YES;
+    }
+    hud.progressObject.completedUnitCount = [@(progress * 100)  intValue] ;
+    hud.detailsLabel.text = [NSString stringWithFormat:@"%lld%%",hud.progressObject.completedUnitCount];
+    if (hud.progressObject.fractionCompleted >= 1.f)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hideAnimated:YES];
+            hud = nil;
+            isShow = NO;
+        });
+    }
+}
+
+%new
+- (void)cancel {
+    NSURLSessionDownloadTask *downloadTask = objc_getAssociatedObject(self, @selector(neteaseMusicDownloadTask));
+    [downloadTask cancel];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [hud hideAnimated:YES];
+        hud = nil;
+        isShow = NO;
+    });
+}
+
+%new
+- (void)videoDidFinishDownloaded:(NSString * _Nonnull)filePath {
+    //保存到系统相册
+    if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(filePath)) {
+        UISaveVideoAtPathToSavedPhotosAlbum(filePath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
+    }
+}
+
+%new
+- (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+    if (error) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Save Failed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    else {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud.mode = MBProgressHUDModeCustomView;
+        NSString *recPath = @"/Library/Application Support/VideoDownloaderCN/";
+        NSString *imagePath = [recPath stringByAppendingPathComponent:@"Checkmark.png"];
+        UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+        hud.customView = [[UIImageView alloc] initWithImage:image];
+        hud.square = YES;
+        hud.label.text = NSLocalizedString(@"Done", @"HUD done title");
+        [hud hideAnimated:YES afterDelay:2.f];
+    }
+    //移除沙盒的缓存文件
+    [[NSFileManager defaultManager] removeItemAtPath:videoPath error:nil];
+    
+}
+
 
 %end
 
