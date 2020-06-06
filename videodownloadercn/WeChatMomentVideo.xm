@@ -1,8 +1,8 @@
 #pragma mark - 微信
 
 #import <UIKit/UIKit.h>
-#import "lib/DownloaderManager/DownloaderManager.h"
-#import "lib/MBProgressHUD/MBProgressHUD.h"
+#import "DownloaderManager.h"
+#import "MBProgressHUD.h"
 
 @interface WCStoryPreviewPageView : UIView <DownloaderManagerDelegeate>
 @property(nonatomic,assign) BOOL canDeleteMyOwnStory;
@@ -49,7 +49,7 @@
         UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
         [wcStoryPreviewPageView addGestureRecognizer:longPressGesture];
     }
-    return %orig;
+    return wcStoryPreviewPageView;
 }
 
 %new

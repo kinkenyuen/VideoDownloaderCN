@@ -1,8 +1,8 @@
 #pragma mark - 微博国际版
 
 #import <UIKit/UIKit.h>
-#import "lib/DownloaderManager/DownloaderManager.h"
-#import "lib/MBProgressHUD/MBProgressHUD.h"
+#import "DownloaderManager.h"
+#import "MBProgressHUD.h"
 #import <Photos/Photos.h>
 
 @interface WUWeiboStatus : NSObject

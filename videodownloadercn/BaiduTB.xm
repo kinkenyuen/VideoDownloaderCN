@@ -1,8 +1,8 @@
 #pragma mark - 百度贴吧
 
 #import <UIKit/UIKit.h>
-#import "lib/DownloaderManager/DownloaderManager.h"
-#import "lib/MBProgressHUD/MBProgressHUD.h"
+#import "DownloaderManager.h"
+#import "MBProgressHUD.h"
 
 @interface TBCVideoPlayerDisplayView : UIView <DownloaderManagerDelegeate>
 @property(nonatomic, readonly, nullable) UIResponder *nextResponder;

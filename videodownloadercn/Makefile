@@ -5,8 +5,13 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = VideoDownloaderCN
 
 VideoDownloaderCN_FILES = WeChatMomentVideo.xm WeiboVideo.xm Neteasemusic.xm TwitterVideo.xm QQVideo.xm articleNews.xm QQMusic.xm YouTubeVideo.xm WeiboInternational.xm Taobao.xm lib/MBProgressHUD/MBProgressHUD.m lib/DownloaderManager/DownloaderManager.m lib/VideoAudioComposition/VideoAudioComposition.m
+VideoDownloaderCN_FILES += YYMobile/YM.xm
+VideoDownloaderCN_FILES += YYMobile/YMShort.xm
 
 VideoDownloaderCN_CFLAGS = -fobjc-arc
+VideoDownloaderCN_OBJCFLAGS += -I./lib/DownloaderManager
+VideoDownloaderCN_OBJCFLAGS += -I./lib/MBProgressHUD
+VideoDownloaderCN_OBJCFLAGS += -I./lib/VideoAudioComposition
 
 export ARCHS = armv7 armv7s arm64 arm64e
 export TARGET = iphone:clang:12.4:8.0

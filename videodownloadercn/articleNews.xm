@@ -1,8 +1,8 @@
 #pragma mark - 今日头条
 
 #import <UIKit/UIKit.h>
-#import "lib/DownloaderManager/DownloaderManager.h"
-#import "lib/MBProgressHUD/MBProgressHUD.h"
+#import "DownloaderManager.h"
+#import "MBProgressHUD.h"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 

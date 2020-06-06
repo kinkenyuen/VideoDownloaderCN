@@ -2,26 +2,30 @@
 #import "DownloaderManager.h"
 #import "MBProgressHUD.h"
 
-#define KEY_WINDOW [UIApplication sharedApplication].keyWindow
-
-@interface AliXDetailVideoInfo : NSObject
+@interface YMDataProvider
+@property(copy) NSURL *videoUrl;
 @end
 
-@interface AliXDetailVideoPlayerView : UIView
-@end
-
-@interface AliXDetailVideoCoverView : UIView <DownloaderManagerDelegeate>
+@interface YMVideoView : UIView <DownloaderManagerDelegeate>
+@property(retain) YMDataProvider *dataProvider; 
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender;
 - (void)downloadVideo;
 @end
 
-%hook AliXDetailVideoCoverView 
+#define KEY_WINDOW [UIApplication sharedApplication].keyWindow
+
+static BOOL isShow = NO;
+static MBProgressHUD *hud = nil;
+
+%hook YMVideoView
 
 - (id)initWithFrame:(struct CGRect)arg1 {
-    id view = %orig;
-    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
-    [view addGestureRecognizer:longPressGesture];
-    return %orig;
+	id view = %orig;
+    if (view) {
+        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+        [view addGestureRecognizer:longPressGesture];
+    }
+    return view;
 }
 
 %new
@@ -58,15 +62,10 @@
 %new 
 - (void)downloadVideo {
     NSURL *url = nil;
-    id parentView = [self superview];
-    if ([parentView isKindOfClass:%c(AliXDetailVideoPlayerView)]) {
-        AliXDetailVideoInfo *_videoInfo = MSHookIvar<AliXDetailVideoInfo *>(parentView, "_videoInfo");
-        NSURL *_videoURL = MSHookIvar<NSURL *>(_videoInfo, "_videoURL");
-        if (_videoURL) {
-            url = _videoURL;
-        }
+    YMDataProvider *dataProvider = [self dataProvider];
+    if (dataProvider) {
+ 		url = [dataProvider videoUrl];
     }
-
     if (url) {
         DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
         downloadManager.delegate = self;
@@ -74,8 +73,6 @@
     }
 }
 
-static BOOL isShow = NO;
-static MBProgressHUD *hud = nil;
 %new
 - (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
     if (!isShow)
@@ -87,7 +84,7 @@ static MBProgressHUD *hud = nil;
         hud.progressObject = progressObject;
         [hud.button setTitle:NSLocalizedString(@"cancel", @"HUD cancel button title") forState:UIControlStateNormal];
         [hud.button addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
-        objc_setAssociatedObject(self, @selector(neteaseMusicDownloadTask),
+        objc_setAssociatedObject(self, @selector(ymDownloadTask),
                          downloadTask, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         isShow = YES;
     }
@@ -105,7 +102,7 @@ static MBProgressHUD *hud = nil;
 
 %new
 - (void)cancel {
-    NSURLSessionDownloadTask *downloadTask = objc_getAssociatedObject(self, @selector(neteaseMusicDownloadTask));
+    NSURLSessionDownloadTask *downloadTask = objc_getAssociatedObject(self, @selector(ymDownloadTask));
     [downloadTask cancel];
     dispatch_async(dispatch_get_main_queue(), ^{
         [hud hideAnimated:YES];
@@ -149,18 +146,21 @@ static MBProgressHUD *hud = nil;
 /**
  插件开关
  */
-static BOOL tbEnable = NO;
-
+static BOOL ymEnable = NO;
 static void loadPrefs() {
     NSMutableDictionary *settings = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.kinkenyuen.videodownloadercnprefs.plist"];
-    tbEnable = [settings objectForKey:@"tbEnable"] ? [[settings objectForKey:@"tbEnable"] boolValue] : NO;
+    ymEnable = [settings objectForKey:@"ymEnable"] ? [[settings objectForKey:@"ymEnable"] boolValue] : NO;
 }
 
 %ctor {
     loadPrefs();
-    if (tbEnable)
+    if (ymEnable)
     {
         %init(_ungrouped);
     }
-
+    
 }
+
+
+
+

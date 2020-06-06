@@ -1,8 +1,8 @@
 #import <UIKit/UIKit.h>
 #import <Photos/Photos.h>
-#import "lib/DownloaderManager/DownloaderManager.h"
-#import "lib/MBProgressHUD/MBProgressHUD.h"
-#import "lib/VideoAudioComposition/VideoAudioComposition.h"
+#import "DownloaderManager.h"
+#import "MBProgressHUD.h"
+#import "VideoAudioComposition.h"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 
