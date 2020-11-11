@@ -1,3 +1,6 @@
+/*
+旧版代码
+*/
 #import <UIKit/UIKit.h>
 #import "DownloaderManager.h"
 #import "MBProgressHUD.h"
@@ -86,6 +89,7 @@
 }
 
 %end
+
 
 %hook QQReadInJoyVideoView
 
@@ -287,6 +291,7 @@ static void loadPrefs() {
     }
     
 }
+
 
 
 
