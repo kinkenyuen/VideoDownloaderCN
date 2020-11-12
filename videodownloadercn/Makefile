@@ -8,6 +8,7 @@ VideoDownloaderCN_FILES = WeChatMomentVideo.xm WeiboVideo.xm Neteasemusic.xm Twi
 VideoDownloaderCN_FILES += YYMobile/YM.xm
 VideoDownloaderCN_FILES += YYMobile/YMShort.xm
 VideoDownloaderCN_FILES += QQ/QQVideo.xm
+VideoDownloaderCN_FILES += QQMusic/QQMusic.xm
 
 VideoDownloaderCN_CFLAGS = -fobjc-arc
 VideoDownloaderCN_OBJCFLAGS += -I./lib/DownloaderManager
