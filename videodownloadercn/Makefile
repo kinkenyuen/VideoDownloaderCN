@@ -4,12 +4,21 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = VideoDownloaderCN
 
-VideoDownloaderCN_FILES = WeChatMomentVideo.xm WeiboVideo.xm Neteasemusic.xm TwitterVideo.xm YouTubeVideo.xm WeiboInternational.xm Taobao.xm lib/MBProgressHUD/MBProgressHUD.m lib/DownloaderManager/DownloaderManager.m lib/VideoAudioComposition/VideoAudioComposition.m
-VideoDownloaderCN_FILES += YYMobile/YM.xm
-VideoDownloaderCN_FILES += YYMobile/YMShort.xm
+VideoDownloaderCN_FILES = lib/MBProgressHUD/MBProgressHUD.m lib/DownloaderManager/DownloaderManager.m lib/VideoAudioComposition/VideoAudioComposition.m
+# VideoDownloaderCN_FILES += YYMobile/YM.xm
+# VideoDownloaderCN_FILES += YYMobile/YMShort.xm
 VideoDownloaderCN_FILES += QQ/QQVideo.xm
 VideoDownloaderCN_FILES += QQMusic/QQMusic.xm
 VideoDownloaderCN_FILES += Toutiao/articleNews.xm
+VideoDownloaderCN_FILES += NeteaseMusic/Neteasemusic.xm
+VideoDownloaderCN_FILES += Weibo/WeiboInternational.xm
+VideoDownloaderCN_FILES += Weibo/WeiboVideo.xm
+VideoDownloaderCN_FILES += Twitter/TwitterVideo.xm
+VideoDownloaderCN_FILES += Taobao/Taobao.xm
+VideoDownloaderCN_FILES += WeChat/WeChatMomentVideo.xm
+VideoDownloaderCN_FILES += Taobao/Taobao.xm
+VideoDownloaderCN_FILES += Youtube/YouTubeVideo.xm
+
 
 VideoDownloaderCN_CFLAGS = -fobjc-arc
 VideoDownloaderCN_OBJCFLAGS += -I./lib/DownloaderManager

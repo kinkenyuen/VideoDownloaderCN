@@ -186,7 +186,7 @@
 			<key>icon</key>
 			<string>tb.png</string>
 		</dict>
-		<dict>
+		<!-- <d --><!-- ict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -201,7 +201,7 @@
 			<true/>
 			<key>icon</key>
 			<string>yjtp.png</string>
-		</dict>
+		</dict> -->
 		
 
 		<dict>
