@@ -19,7 +19,7 @@
 @property(retain, nonatomic) SPMediaInfo *mediaInfo;
 @end
 
-@interface VAViewController : UIViewController <DownloaderManagerDelegeate>
+@interface VAViewController : UIViewController <DownloaderManagerDelegeate, UIAlertViewDelegate>
 @property(readonly, nonatomic) __weak UIScrollView *mainScrollView;
 - (void)downloadVideo;
 @end
@@ -29,6 +29,8 @@
 
 @interface VACollectionViewCell : UICollectionViewCell
 @end
+
+static UIView *vaView;
 
 //PTSPageController
 
@@ -51,6 +53,7 @@
 - (void)viewDidLoad  
 {  
     %orig;
+    vaView = self.view;
     [[UIApplication sharedApplication] setApplicationSupportsShakeToEdit:YES];  
     [self becomeFirstResponder]; 
 }  
@@ -58,6 +61,7 @@
 - (void)viewWillDisappear:(BOOL)animated  
 {  
     %orig;
+    vaView = nil;
     [self resignFirstResponder];  
 }
 
@@ -66,19 +70,15 @@
     //检测到摇动开始
     if (motion == UIEventSubtypeMotionShake)
     {
-        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"VideoDownloaderCN" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载",nil];
+        [alert show];
+    }
+}
 
-        UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self downloadVideo];
-        }];
-
-        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-
-        }];
-
-        [alertVC addAction:dAction];
-        [alertVC addAction:cAction];
-        [self presentViewController:alertVC animated:YES completion:nil];
+%new
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (1 == buttonIndex) {
+        [self downloadVideo];
     }
 }
 
@@ -118,13 +118,13 @@
         if ([targetView isKindOfClass:%c(SPVideoView)]) {
             NSURL *url = nil; 
             SPPlayerWrapper *wrapper = MSHookIvar<SPPlayerWrapper *>(targetView,"_delegate");
-            NSLog(@"kk | wrapper : %@",wrapper);
+            // NSLog(@"kk | wrapper : %@",wrapper);
             if (wrapper) {
                 SPMediaInfo *mediaInfo = [wrapper mediaInfo];
                 if (mediaInfo) {
                     NSString *urlString = [mediaInfo url];
                     url = [NSURL URLWithString:urlString];
-                    NSLog(@"kk | url : %@",url);
+                    // NSLog(@"kk | url : %@",url);
                     if (url && [url isKindOfClass:%c(NSURL)]) {
                         DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
                         downloadManager.delegate = self;
@@ -142,7 +142,7 @@ static MBProgressHUD *hud = nil;
 - (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
     if (!isShow)
     {
-        hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud = [MBProgressHUD showHUDAddedTo:vaView animated:YES];
         hud.mode = MBProgressHUDModeDeterminate;
         hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
         NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
@@ -221,7 +221,6 @@ static void loadPrefs() {
     loadPrefs();
     if (qqEnable)
     {
-        NSLog(@"kk | 摇一摇");
         %init(_ungrouped);
     }
     
