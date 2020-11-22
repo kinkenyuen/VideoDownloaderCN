@@ -194,7 +194,7 @@ static MBProgressHUD *hud = nil;
 
 %hook QQReadInJoySubsViewController
 
-- (void)viewDidAppear:(_Bool)arg1 {
+- (void)viewDidAppear:(BOOL)arg1 {
     %orig;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

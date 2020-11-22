@@ -16,7 +16,7 @@
 @interface WCStoryActionToolBar
 @property(nonatomic, readonly, nullable) UIResponder *nextResponder;
 
-- (void)addButtonWithTitle:(id)arg1 iconName:(id)arg2 isDestructive:(_Bool)arg3 handler:(id)arg4;
+- (void)addButtonWithTitle:(id)arg1 iconName:(id)arg2 isDestructive:(BOOL)arg3 handler:(id)arg4;
 - (void)onShowAlertViewOfDwn;
 @end
 
@@ -42,7 +42,7 @@
  */
 %hook WCStoryPreviewPageView
 
-- (id)initWithFrame:(struct CGRect)arg1 dataItem:(id)arg2 canDeleteMyOwnStory:(_Bool)arg3 {
+- (id)initWithFrame:(struct CGRect)arg1 dataItem:(id)arg2 canDeleteMyOwnStory:(BOOL)arg3 {
     //在别人时刻视频界面添加一个长按手势弹出下载按钮
     id wcStoryPreviewPageView = %orig;
     if (wcStoryPreviewPageView && arg3 == 0) {
@@ -142,7 +142,7 @@ static MBProgressHUD *hud = nil;
  */
 - (id)initWithFrame:(struct CGRect)arg1 {
     id ToolBar = %orig;
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
     [ToolBar addButtonWithTitle:@"下载视频" iconName:@"dwn" isDestructive:NO handler:^{
         [weakSelf onShowAlertViewOfDwn];
     }];

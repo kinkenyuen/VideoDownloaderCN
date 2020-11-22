@@ -30,10 +30,11 @@
 @interface VACollectionViewCell : UICollectionViewCell
 @end
 
+//PTSPageController
 
 %hook QQReadInJoySubsViewController
 
-- (void)viewDidAppear:(_Bool)arg1 {
+- (void)viewDidAppear:(BOOL)arg1 {
     %orig;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -117,11 +118,13 @@
         if ([targetView isKindOfClass:%c(SPVideoView)]) {
             NSURL *url = nil; 
             SPPlayerWrapper *wrapper = MSHookIvar<SPPlayerWrapper *>(targetView,"_delegate");
+            NSLog(@"kk | wrapper : %@",wrapper);
             if (wrapper) {
                 SPMediaInfo *mediaInfo = [wrapper mediaInfo];
                 if (mediaInfo) {
                     NSString *urlString = [mediaInfo url];
                     url = [NSURL URLWithString:urlString];
+                    NSLog(@"kk | url : %@",url);
                     if (url && [url isKindOfClass:%c(NSURL)]) {
                         DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
                         downloadManager.delegate = self;
@@ -218,6 +221,7 @@ static void loadPrefs() {
     loadPrefs();
     if (qqEnable)
     {
+        NSLog(@"kk | 摇一摇");
         %init(_ungrouped);
     }
     

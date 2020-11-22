@@ -4,7 +4,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = VideoDownloaderCN
 
-VideoDownloaderCN_FILES = lib/MBProgressHUD/MBProgressHUD.m lib/DownloaderManager/DownloaderManager.m lib/VideoAudioComposition/VideoAudioComposition.m
+$(TWEAK_NAME)_FILES = lib/MBProgressHUD/MBProgressHUD.m lib/DownloaderManager/DownloaderManager.m lib/VideoAudioComposition/VideoAudioComposition.m
 # VideoDownloaderCN_FILES += YYMobile/YM.xm
 # VideoDownloaderCN_FILES += YYMobile/YMShort.xm
 VideoDownloaderCN_FILES += lib/DownloaderManager/KKFileMultiDownloadUnit.m
@@ -28,7 +28,9 @@ VideoDownloaderCN_OBJCFLAGS += -I./lib/MBProgressHUD
 VideoDownloaderCN_OBJCFLAGS += -I./lib/VideoAudioComposition
 
 export ARCHS = armv7 armv7s arm64 arm64e
-export TARGET = iphone:clang:12.4:8.0
+export TARGET = iphone:clang:13.7:8.0
+
+$(TWEAK_NAME)_CCFLAGS += -std=c++14 -stdlib=libc++	
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
