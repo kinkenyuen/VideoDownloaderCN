@@ -61,7 +61,9 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
 %property(nonatomic, strong)KKFileMultiDownloadUnit *downloadUnit;
 
 - (void)viewDidLoad {
+    %log;
     %orig;
+    // NSLog(@"kk | view : %@",self.view);
     if ([self.view isKindOfClass:%c(YTMainAppVideoPlayerOverlayView)]) {
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
         [self.view addGestureRecognizer:longPress];
@@ -86,7 +88,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
             selectableAudioFormats = [vc selectableAudioFormats];
             selectableVideoFormats = [vc selectableVideoFormats];
         }
-        NSLog(@"kk | 视频总长度 : %f",totalMediaTime);
+        // NSLog(@"kk | 视频总长度 : %f",totalMediaTime);
         //获取音频URL
         for (id audioFormat in selectableAudioFormats) {
             MLFormat *mlFormat = (MLFormat *)audioFormat;
@@ -95,7 +97,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
             {
                 NSString *audioURLString = [formatStream URL];
                 self.audioURL = [NSURL URLWithString:audioURLString];
-                NSLog(@"kk | 音频URL : %@",self.audioURL);
+                // NSLog(@"kk | 音频URL : %@",self.audioURL);
                 break;
             }
         }
@@ -116,8 +118,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
                         //先下载音频再下载视频
                         self.downloadUnit = [[KKFileMultiDownloadUnit alloc] initWithURL:self.audioURL];
                         self.downloadUnit.delegate = self;
-                        self.downloadUnit.outputPath = audioFilePath;
-                        [self.downloadUnit startMultiDownload];
+                        self.downloadUnit.outputPath = audioFilePath;                        
                         if (!isShow)
                         {
                             hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
@@ -129,6 +130,7 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
                             [hud.button addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
                             isShow = YES;
                         }
+                        [self.downloadUnit startMultiDownload];
                     }
                 }];
                 [alertVC addAction:action];
@@ -136,20 +138,23 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
         }
         UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
         [alertVC addAction:cancel];
+        alertVC.popoverPresentationController.sourceView = self.view;
+        alertVC.popoverPresentationController.sourceRect=CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
         [self presentViewController:alertVC animated:YES completion:nil];
     }
 }
 
 %new
 - (void)downloadTaskProgress:(double)progress {
-    NSLog(@"kk | 下载进度 : %f",progress);
+    // NSLog(@"kk | 单任务进度 : %f",progress);
     hud.progressObject.completedUnitCount = [@(progress * 100) intValue] + currentProgress;
+    // NSLog(@"kk | hud进度计数 : %lld",hud.progressObject.completedUnitCount);
     hud.detailsLabel.text = [NSString stringWithFormat:@"%lld%%",hud.progressObject.completedUnitCount / 3];
 }
 
 %new
 - (void)downloadTaskDidFinishWithSavePath:(NSString *)savePath {
-    NSLog(@"kk | path:%@", savePath);
+    // NSLog(@"kk | path:%@", savePath);
     if ([savePath isEqualToString:videoFilePath])
     {
         //所有下载任务完成
@@ -159,12 +164,12 @@ static NSString *videoFilePath = [[NSSearchPathForDirectoriesInDomains(NSDocumen
 
     if (isAllDownloadTaskFinish == NO)
     {
-        NSLog(@"kk | 开始下载视频");
+        currentProgress += 100; 
+        // NSLog(@"kk | 开始下载视频");
         self.downloadUnit = [[KKFileMultiDownloadUnit alloc] initWithURL:self.videoURL];
         self.downloadUnit.delegate = self;
         self.downloadUnit.outputPath = videoFilePath;
         [self.downloadUnit startMultiDownload];
-        currentProgress += 100; 
     }else {
         //合成视频
         VideoAudioComposition *vaComposition = [[VideoAudioComposition alloc] init];
@@ -258,6 +263,7 @@ static void loadPrefs() {
     loadPrefs();
     if (ytEnable)
     {
+        // NSLog(@"kk | init");
         %init(_ungrouped);
     }
     

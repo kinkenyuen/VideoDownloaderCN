@@ -33,7 +33,7 @@
     %log;
     %orig;
     UIView *contentView = MSHookIvar<UIView *>(self, "_contentView");
-    NSLog(@"kk | contentView : %@",contentView);
+    // NSLog(@"kk | contentView : %@",contentView);
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
     [contentView addGestureRecognizer:longPress];
 }
@@ -178,7 +178,7 @@ static void loadPrefs() {
     loadPrefs();
     if (twitterEnable)
     {
-        NSLog(@"kk | init");
+        // NSLog(@"kk | init");
         %init(_ungrouped);
     }
     

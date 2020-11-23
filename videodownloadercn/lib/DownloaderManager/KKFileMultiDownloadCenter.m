@@ -8,7 +8,7 @@
 
 #import "KKFileMultiDownloadCenter.h"
 
-#define blockSize 1024*1024 * 10 //10MB
+#define blockSize 1024*1024 //1MB
 
 @interface KKFileMultiDownloadCenter () <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
 @property (nonatomic, assign) long long totalFileLength;    //文件总长度
@@ -72,7 +72,7 @@
                 NSString *range=[NSString stringWithFormat:@"bytes=%lld-%lld", startSize, endSize];
                 NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
                 [request setValue:range forHTTPHeaderField:@"Range"];
-                NSLog(@"requestHeader:%@", request.allHTTPHeaderFields);
+                // NSLog(@"requestHeader:%@", request.allHTTPHeaderFields);
                 NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request];
                 [task resume];
             }];
