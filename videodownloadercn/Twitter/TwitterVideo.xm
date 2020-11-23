@@ -30,8 +30,10 @@
 %hook T1SlideshowViewController
 
 - (void)viewDidLoad {
+    %log;
     %orig;
     UIView *contentView = MSHookIvar<UIView *>(self, "_contentView");
+    NSLog(@"kk | contentView : %@",contentView);
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
     [contentView addGestureRecognizer:longPress];
 }
@@ -80,6 +82,8 @@
         UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {    
         }];
         [alertVC addAction:cAction];
+        alertVC.popoverPresentationController.sourceView = self.view;
+        alertVC.popoverPresentationController.sourceRect=CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
         [self presentViewController:alertVC animated:YES completion:nil];
     }
 }
@@ -174,6 +178,7 @@ static void loadPrefs() {
     loadPrefs();
     if (twitterEnable)
     {
+        NSLog(@"kk | init");
         %init(_ungrouped);
     }
     
