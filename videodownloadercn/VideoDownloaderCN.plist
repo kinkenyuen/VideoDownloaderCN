@@ -1,18 +1,13 @@
 {
 	Filter = {
 		Bundles = (
-			"com.tencent.xin",
 			"com.sina.weibo",
-			"com.netease.cloudmusic",
+			"com.netease.CloudMusicIpad",
 			"com.atebits.Tweetie2",
-			"com.baidu.tieba",
 			"com.tencent.mqq",
 			"com.ss.iphone.article.News",
 			"com.ss.iphone.article.NewsSocial",
-			"com.tencent.QQMusic",
 			"com.google.ios.youtube",
-			"com.weibo.international",
-			"com.taobao.taobao4iphone",
 			"yyvoice",
 		);
 	};

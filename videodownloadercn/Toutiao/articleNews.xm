@@ -4,14 +4,28 @@
 #import "DownloaderManager.h"
 #import "MBProgressHUD.h"
 
-#define KEY_WINDOW [UIApplication sharedApplication].keyWindow
-
 @interface TTVideoEngineURLInfo : NSObject
 @property(copy, nonatomic) NSString *backupURL1;
 @end
 
-@interface TTVideoEnginePlayVidSource : NSObject
-@property(copy, nonatomic) NSString *usingUrl;
+@interface TTVideoEngineURLInfoMap : NSObject
+@property(retain, nonatomic) TTVideoEngineURLInfo *video1;
+@end
+
+@interface TTVideoEngineInfoModel : NSObject
+@property(retain, nonatomic) TTVideoEngineURLInfoMap *videoURLInfoMap;
+@end
+
+@interface TTVideoEnginePlayInfo : NSObject
+@property(retain, nonatomic) TTVideoEngineInfoModel *videoInfo;
+@end
+
+@interface TTVideoEngineVideoInfo : NSObject
+@property(retain, nonatomic) TTVideoEnginePlayInfo *playInfo;
+@end
+
+@interface TTVideoEnginePlayInfoSource : NSObject
+@property(copy, nonatomic) TTVideoEngineVideoInfo *videoInfo;
 - (id)usingUrlInfo;
 @end
 
@@ -23,7 +37,7 @@
 @property(retain, nonatomic) TTVideoEngine *videoEngine;
 @end
 
-@interface TTVPlayerGestureContainerView : UIView <DownloaderManagerDelegeate>
+@interface TTVPlayerGestureContainerView : UIView <DownloaderManagerDelegeate, UIAlertViewDelegate>
 @property(nonatomic) __weak TTVPlayer *player; 
 - (void)downloadVideo;
 @end
@@ -41,9 +55,14 @@
     TTVideoEngine *videoEngine = player.videoEngine;
     id source = videoEngine.playSource;
     if ([source isKindOfClass:%c(TTVideoEnginePlayVidSource)]) {
-        TTVideoEnginePlayVidSource *_source = (TTVideoEnginePlayVidSource *)source;
-        TTVideoEngineURLInfo *urlInfo = [_source usingUrlInfo];
-        url = [NSURL URLWithString:urlInfo.backupURL1];
+        TTVideoEnginePlayInfoSource *_source = (TTVideoEnginePlayInfoSource *)source;
+        TTVideoEngineVideoInfo *videoInfo = [_source videoInfo];
+        TTVideoEnginePlayInfo *playInfo = [videoInfo playInfo];
+        TTVideoEngineInfoModel *vInfo = [playInfo videoInfo];
+        TTVideoEngineURLInfoMap *videoURLInfoMap = [vInfo videoURLInfoMap];
+        TTVideoEngineURLInfo *video1 = [videoURLInfoMap video1];
+        NSString *backupURL1 = [video1 backupURL1];
+        url = [NSURL URLWithString:backupURL1];
         if (url && [url isKindOfClass:%c(NSURL)]) {
             DownloaderManager *downloadManager = [DownloaderManager sharedDownloaderManager];
             downloadManager.delegate = self;
@@ -58,7 +77,7 @@ static MBProgressHUD *hud = nil;
 - (void)videoDownloadeProgress:(float)progress downloadTask:(NSURLSessionDownloadTask * _Nullable)downloadTask {
     if (!isShow)
     {
-        hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
         hud.mode = MBProgressHUDModeDeterminate;
         hud.label.text = NSLocalizedString(@"Downloading...", @"HUD loading title");
         NSProgress *progressObject = [NSProgress progressWithTotalUnitCount:100];
@@ -107,7 +126,7 @@ static MBProgressHUD *hud = nil;
         [alert show];
     }
     else {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:KEY_WINDOW animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
         hud.mode = MBProgressHUDModeCustomView;
         NSString *recPath = @"/Library/Application Support/VideoDownloaderCN/";
         NSString *imagePath = [recPath stringByAppendingPathComponent:@"Checkmark.png"];
@@ -129,30 +148,15 @@ static MBProgressHUD *hud = nil;
 - (void)longGestureAction:(UILongPressGestureRecognizer *)sender {
     %orig;
     if (sender.state == UIGestureRecognizerStateBegan) {
-        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"VideoDownloaderCN" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"VideoDownloaderCN" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"下载",nil];
+        [alert show];
+    }
+}
 
-        UIAlertAction *dAction = [UIAlertAction actionWithTitle:@"Download" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self.controlView downloadVideo];
-        }];
-
-        UIAlertAction *cAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        }];
-
-        [alertVC addAction:dAction];
-        [alertVC addAction:cAction];
-
-        //search vc
-        id vc = [self.controlView nextResponder];
-        while (vc) {
-            if ([vc isKindOfClass:%c(UIViewController)])
-            {
-                break;
-            }else vc = [vc nextResponder];
-        }
-        if ([vc isKindOfClass:%c(UIViewController)]) {
-            vc = (UIViewController *)vc;
-            [vc presentViewController:alertVC animated:YES completion:nil];
-        }
+%new 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (1 == buttonIndex) {
+        [self.controlView downloadVideo];
     }
 }
 

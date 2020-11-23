@@ -10,14 +10,16 @@
 			<key>label</key>
 			<string>开关</string>
 		</dict>
-		<dict>   <!-- 这些Cell在设置中改变值后，会在/var/mobile/Library/Preferences/com.kinkenyuen.videodownloadercnprefs.plist文件生成对应的key与value -->
+
+		<!-- 
+		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
 			<false/>
-			<key>defaults</key><!--所有cell的defaults应该写成同一的值，可以是preference bundle的包名 -->
+			<key>defaults</key>
 			<string>com.kinkenyuen.videodownloadercnprefs</string>
-			<key>key</key><!-- cell对应的key，主要用来控制插件开关，在/var/mobile/Library/Preferences/com.kinkenyuen.videodownloadercnprefs.plist文件 -->
+			<key>key</key>
 			<string>wechatEnable</string>
 			<key>label</key>
 			<string>微信时刻视频</string>
@@ -25,7 +27,8 @@
 			<true/>
 			<key>icon</key>
 			<string>WeChatIcon.png</string>
-		</dict>
+		</dict> -->
+		
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -42,7 +45,8 @@
 			<key>icon</key>
 			<string>qq.png</string>
 		</dict>
-		<dict>
+
+		<!-- <dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -57,7 +61,8 @@
 			<true/>
 			<key>icon</key>
 			<string>qm.png</string>
-		</dict>
+		</dict> -->
+
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -74,7 +79,7 @@
 			<key>icon</key>
 			<string>Weibo.png</string>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -89,7 +94,7 @@
 			<true/>
 			<key>icon</key>
 			<string>WeiboInternation.png</string>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -170,7 +175,7 @@
 			<key>icon</key>
 			<string>yt.png</string>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -185,7 +190,7 @@
 			<true/>
 			<key>icon</key>
 			<string>tb.png</string>
-		</dict>
+		</dict> -->
 		<!-- <d --><!-- ict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -270,7 +275,7 @@
 			<key>footerText</key>
 			<string>允许App内短视频下载保存到本地，视频界面长按或点按呼出
 
-Version 1.3.4
+Version 1.3.5
 			</string>
 		</dict>
 		<dict>
