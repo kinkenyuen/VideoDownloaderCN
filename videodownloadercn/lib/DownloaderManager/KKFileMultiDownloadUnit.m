@@ -23,16 +23,20 @@
 
 - (void)startMultiDownload {
     if (self.url && [self.url isKindOfClass:[NSURL class]]) {
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.url];
-        NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:request.URL.lastPathComponent];
-        NSFileManager *fm = [NSFileManager defaultManager];
-        if ([fm fileExistsAtPath:filePath]) {
-            [fm removeItemAtPath:filePath error:nil];
+        NSDate *date = [[NSDate alloc] init];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"YYYYMMddHHmmss"];
+        NSString *fileName = [formatter stringFromDate:date];
+        if (nil == _outputPath) {
+            _outputPath = [[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:fileName] stringByAppendingPathComponent:@".mp4"];
+        }
+        if ([[NSFileManager defaultManager] fileExistsAtPath:_outputPath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:_outputPath error:nil];
         }
         [self _getFileTotalLengthWithURL:self.url.absoluteString completion:^(NSInteger length) {
             KKFileMultiDownloadCenter *dc = [[KKFileMultiDownloadCenter alloc] init];
             dc.delegate = self;
-            [dc multiDownloadWithFileLength:length url:self.url filePath:(NSString *)filePath];
+            [dc multiDownloadWithFileLength:length url:self.url filePath:(NSString *)_outputPath];
         }];
     }
 }
